@@ -3,7 +3,7 @@
 /**
 * Example usage of File_Bittorrent
 *
-* @author Markus Tacker <mtacker@itfuture.de>
+* @author Markus Tacker <m@tacker.org>
 * @version $Id$
 */
 
@@ -96,7 +96,7 @@ Array
             [0] => http://glimux.sytes.net:6969/announce
             [1] => http://69.156.42.20:6969/announce
         )
-                                                
+
 )
 
 */

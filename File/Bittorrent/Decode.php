@@ -112,6 +112,12 @@ class File_Bittorrent_Decode
     var $_source = '';
 
     /**
+    * @var int      Source length
+    * @access private
+    */
+    var $_source_length = 0;
+
+    /**
     * @var int      Current position of the string
     * @access private
     */
@@ -127,6 +133,7 @@ class File_Bittorrent_Decode
     {
         $this->_source = $str;
         $this->_position  = 0;
+        $this->_source_length = strlen($this->_source);
         return $this->_bdecode();
     }
 
@@ -158,6 +165,7 @@ class File_Bittorrent_Decode
 
         // Decode .torrent
         $this->_source = file_get_contents($file);
+        $this->_source_length = strlen($this->_source);
         $decoded = $this->_bdecode();
 
         // Pull information form decoded data
@@ -227,12 +235,11 @@ class File_Bittorrent_Decode
     * Decode a BEncoded String
     *
     * @access private
-    * @return array    Returns an array containing the representation of the data in the BEncoded string
+    * @return mixed    Returns the representation of the data in the BEncoded string or false on error
     */
     function _bdecode()
     {
-        $char = $this->_getChar();
-        switch ($char) {
+        switch ($this->_getChar()) {
         case 'i':
             $this->_position++;
             return $this->_decode_int();
@@ -263,7 +270,8 @@ class File_Bittorrent_Decode
     */
     function _decode_dict()
     {
-        while ($this->_getChar() != 'e') {
+        while ($char = $this->_getChar()) {
+            if ($char == 'e') break;
             $key = $this->_decode_string();
             $val = $this->_bdecode();
             $return[$key] = $val;
@@ -280,12 +288,15 @@ class File_Bittorrent_Decode
     * would bEncode to 11:BitTorrents.
     *
     * @access private
-    * @return string
+    * @return string|false
     */
     function _decode_string()
     {
         // Find position of colon
-        $pos_colon  = strpos($this->_source, ':', $this->_position);
+        // Supress error message if colon is not found which may be caused by a corrupted or wrong encoded string
+        if(!$pos_colon = @strpos($this->_source, ':', $this->_position)) {
+            return false;
+        }
         // Get length of string
         $str_length = intval(substr($this->_source, $this->_position, $pos_colon));
         // Get string
@@ -342,11 +353,13 @@ class File_Bittorrent_Decode
     * Get the char at the current position
     *
     * @access private
-    * @return string
+    * @return string|false
     */
     function _getChar()
     {
-        return (!empty($this->_source)) ? $this->_source{$this->_position} : '';
+        if (empty($this->_source)) return false;
+        if ($this->_position >= $this->_source_length) return false;
+        return $this->_source{$this->_position};
     }
 }
 
