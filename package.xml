@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<package version="1.0">
+    <name>File_Bittorrent</name>
+    <summary>Decode and Encode data in Bittorrent format</summary>
+    <description>This package consists of two classes which handles the encoding and decoding of data in Bittorrent format.
+    You can also extract useful informations from .torrent files.</description>
+    <license>PHP License</license>
+    <maintainers>
+        <maintainer>
+            <user>tacker</user>
+            <name>Markus Tacker</name>
+            <email>m@tacker.org</email>
+            <role>lead</role>
+        </maintainer>
+    </maintainers>
+    <deps>
+        <dep type="pkg" rel="ge" version="1.1.0">PHP_Compat</dep>
+    </deps>
+    <release>
+        <version>0.1.2</version>
+        <state>alpha</state>
+        <date>2004-07-11</date>
+        <notes>Implemented changes suggestested during call for votes.</notes>
+        <filelist>
+            <file role="php">File/Bittorrent/Encode.php</file>
+            <file role="php">File/Bittorrent/Decode.php</file>
+            <file role="doc">example.php</file>
+            <file role="doc">freebsd.torrent</file>
+        </filelist>
+    </release>
+    <changelog>
+        <release>
+            <version>0.1</version>
+            <state>alpha</state>
+            <date>2004-06-25</date>
+            <notes>First release as proposal.</notes>
+        </release>
+        <release>
+            <version>0.1.1</version>
+            <state>alpha</state>
+            <date>2004-06-28</date>
+            <notes>Split encoding and decoding in two classes. Now you can encode vars and decode strings, not only .torrent files.</notes>
+        </release>
+        <release>
+            <version>0.1.2</version>
+            <state>alpha</state>
+            <date>2004-07-11</date>
+            <notes>Implemented changes suggestested during call for votes.</notes>
+        </release>
+    </changelog>
+</package>

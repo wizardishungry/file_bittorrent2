@@ -1,0 +1,325 @@
+<?php
+
+// +----------------------------------------------------------------------+
+// | PHP Version 4                                                        |
+// +----------------------------------------------------------------------+
+// | Copyright (c) 1997-2004 The PHP Group                                |
+// +----------------------------------------------------------------------+
+// | This source file is subject to version 2.02 of the PHP license,      |
+// | that is bundled with this package in the file LICENSE, and is        |
+// | available at through the world-wide-web at                           |
+// | http://www.php.net/license/2_02.txt.                                 |
+// | If you did not receive a copy of the PHP license and are unable to   |
+// | obtain it through the world-wide-web, please send a note to          |
+// | license@php.net so we can mail you a copy immediately.               |
+// +----------------------------------------------------------------------+
+// | Author Markus Tacker <m@tacker.org>                                  |
+// +----------------------------------------------------------------------+
+
+/**
+* Encode data in Bittorrent format
+*
+* Based on 
+*   Original Python implementation by Petru Paler <petru@paler.net>
+*   PHP translation by Gerard Krijgsman <webmaster@animesuki.com>
+*   Gerard's regular expressions removed by Carl Ritson <critson@perlfu.co.uk>
+*
+* Info on the .torrent file format
+*
+* BEncoding is a simple, easy to implement method of associating
+* data types with information in a file. The values in a torrent
+* file are bEncoded.
+* There are 4 different data types that can be bEncoded:
+* Integers, Strings, Lists and Dictionaries.
+* [http://www.monduna.com/bt/faq.html]
+*
+* @package File_Bittorrent
+* @category File
+*
+* @author Markus Tacker <m@tacker.org>
+*
+* @version $Id$
+*/
+
+/**
+* Include required classes
+*/
+require_once 'PEAR.php';
+require_once 'PHP/Compat.php';
+
+/**
+* Load replacement functions
+*/
+PHP_Compat::loadFunction('file_get_contents');
+
+/**
+* Decode .torrent files
+*
+* @package File_Bittorrent
+* @category File
+*/
+class File_Bittorrent_Decode
+{
+    /**
+    * @var string   Name of the Torrent
+    */
+    var $name = '';
+    
+    /**
+    * @var string   Filename of the torrent
+    */
+    var $filename = '';
+    
+    /**
+    * @var string   Comment
+    */
+    var $comment = '';
+    
+    /**
+    * @var int   Creation date as unix timestamp
+    */
+    var $date = 0;
+    
+    /**
+    * @var array    Files in the Torrent
+    */
+    var $files = array();
+    
+    /**
+    * @var int      Size of of the full Torrent (after download)
+    */
+    var $size = 0;
+    
+    /**
+    * @var string   Signature of the software which created the Torrent
+    */
+    var $created_by = '';
+    
+    /**
+    * @var string   Source string
+    * @access private
+    */
+    var $_source = '';
+    
+    /**
+    * @var int      Current position of the string
+    * @access private
+    */
+    var $_position = 0;
+    
+    /**
+    * Decode a Bencoded string
+    *
+    * @param string
+    * @return mixed
+    */
+    function decode($str)
+    {
+        $this->_source = $str;
+        $this->_position  = 0;
+        return $this->_bdecode();
+    }
+    
+    /**
+    * Decode .torrent file and accumulate information
+    *
+    * @param string    Filename        
+    * @return mixed    Returns an arrayon success or false on error
+    */
+    function decodeFile($file)
+    {
+        // Check file
+        if (!is_file($file)) {
+            PEAR::raiseError('File_Bittorrent_Decode::decode() - Not a file.', null, null, "Given filename '$file' is not a valid file.");
+            return false;
+        }
+        
+        // Reset public attributes
+        $this->name       = '';
+        $this->filename   = '';
+        $this->comment    = '';
+        $this->date       = 0;
+        $this->files      = array();
+        $this->size       = 0;
+        $this->created_by = '';
+        $this->_position  = 0;
+
+        // Decode .torrent  
+        $this->_source = file_get_contents($file);
+        $decoded = $this->_bdecode();
+        
+        // Pull information form decoded data
+        $this->filename = basename($file);
+        // Name of the Torrent - statet by the Torrent's author
+        $this->name     = $decoded['info']['name'];
+        // Authors may add comments to a Torrent
+        if (isset($decoded['comment'])) {
+            $this->comment = $decoded['comment'];
+        }
+        // Creation date of the Torrent as unix timestamp
+        if (isset($decoded['creation date'])) {
+            $this->date = $decoded['creation date'];
+        }
+        // This contains the signature of the application used to create the Torrent
+        if (isset($decoded['created by'])) {
+            $this->created_by = $decoded['created by'];
+        }
+        // There is sometimes an array listing all files 
+        // in the Torrent with their individual filesize
+        if (isset($decoded['info']['files']) and is_array($decoded['info']['files'])) {
+            foreach ($decoded['info']['files'] as $file) {
+                $this->size += $file['length'];
+                $this->files[] = array(
+                    'filename' => $file['path'][0],
+                    'size'     => $file['length'],
+                );
+            }
+        }
+        // This contains the total length of the files in
+        // the Torrent after the download is completed
+        // in Bytes
+        if (isset($decoded['info']['length']) and $this->size == 0) {
+            $this->size = $decoded['info']['length'];
+        }
+        
+        // Currently, I'm not sure how to determine an error
+        // Just try to fetch the info from the decoded data
+        // and return it
+        return array(
+            'name'       => $this->name,
+            'filename'   => $this->filename,
+            'comment'    => $this->comment,
+            'date'       => $this->date,
+            'created_by' => $this->created_by,
+            'files'      => $this->files,
+            'size'       => $this->size,
+        );
+    }
+    
+    /**
+    * Decode a BEncoded String
+    *
+    * @access private
+    * @return array    Returns an array containing the representation of the data in the BEncoded string
+    */
+    function _bdecode()
+    {
+        $char = $this->_getChar();
+        switch ($char) {
+        case 'i':
+            $this->_position++;
+            return $this->_decode_int();
+            break;
+        case 'l':
+            $this->_position++;
+            return $this->_decode_list();
+            break;
+        case 'd':
+            $this->_position++;
+            return $this->_decode_dict();
+            break;
+        default:
+            return $this->_decode_string();
+        }
+    }
+    
+    /**
+    * Decode a BEncoded dictionary
+    *
+    * Dictionaries are prefixed with a d and terminated by an e. They
+    * are similar to list, except that items are in key value pairs. The
+    * dictionary {"key":"value", "Monduna":"com", "bit":"Torrents", "number":7}
+    * would bEncode to d3:key5:value7:Monduna3:com3:bit:8:Torrents6:numberi7ee
+    *
+    * @access private
+    * @return array
+    */
+    function _decode_dict()
+    {
+        while ($this->_getChar() != 'e') {
+            $key = $this->_decode_string();
+            $val = $this->_bdecode();
+            $return[$key] = $val;
+        }
+        $this->_position++;
+        return $return;
+    }
+
+    /**
+    * Decode a BEncoded string
+    *
+    * Strings are prefixed with their length followed by a colon.
+    * For example, "Monduna" would bEncode to 7:Monduna and "BitTorrents"
+    * would bEncode to 11:BitTorrents.
+    *
+    * @access private
+    * @return string
+    */                
+    function _decode_string()
+    {
+        // Find position of colon
+        $pos_colon  = strpos($this->_source, ':', $this->_position);
+        // Get length of string
+        $str_length = intval(substr($this->_source, $this->_position, $pos_colon));
+        // Get string
+        $return = substr($this->_source, $pos_colon + 1, $str_length);
+        // Move Pointer after string
+        $this->_position = $pos_colon + $str_length + 1;
+        return $return;
+    }
+    
+    /**
+    * Decode a BEncoded integer
+    *
+    * Integers are prefixed with an i and terminated by an e. For
+    * example, 123 would bEcode to i123e, -3272002 would bEncode to
+    * i-3272002e.
+    *
+    * @access private
+    * @return int
+    */                
+    function _decode_int()
+    {
+        $pos_e  = strpos($this->_source, 'e', $this->_position);
+        // $return = intval(substr($this->_source, $this->_position, $pos_e));
+        $return = intval(substr($this->_source, $this->_position, $pos_e - $this->_position));
+        $this->_position = $pos_e + 1;
+        return $return;
+    }
+
+    /**
+    * Decode a BEncoded list
+    *
+    * Lists are prefixed with a l and terminated by an e. The list
+    * should contain a series of bEncoded elements. For example, the
+    * list of strings ["Monduna", "Bit", "Torrents"] would bEncode to
+    * l7:Monduna3:Bit8:Torrentse. The list [1, "Monduna", 3, ["Sub", "List"]]
+    * would bEncode to li1e7:Mondunai3el3:Sub4:Listee
+    *
+    * @access private
+    * @return array
+    */                
+    function _decode_list()
+    {
+        $char = $this->_getChar();
+        while ($this->_source{$this->_position} != 'e') {
+            $val = $this->_bdecode();
+            $return[] = $val;
+        }
+        $this->_position++;
+        return $return;
+    }
+
+    /**
+    * Get the char at the current position
+    *
+    * @access private
+    * @return string           
+    */
+    function _getChar()
+    {
+        return (!empty($this->_source)) ? $this->_source{$this->_position} : '';
+    }
+}
+
+?>
