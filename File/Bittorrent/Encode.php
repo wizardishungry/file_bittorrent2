@@ -127,8 +127,6 @@ class File_Bittorrent_Encode
     */
     function encode_array($array)
     {
-        // Sort array
-        asort($array, SORT_STRING);
         // Check for strings in the keys
         $isList = true;
         foreach (array_keys($array) as $key) {
@@ -139,6 +137,7 @@ class File_Bittorrent_Encode
         }
         if ($isList) {
             // Wie build a list
+            ksort($array, SORT_NUMERIC);
             $return = 'l';
             foreach ($array as $val) {
                 $return .= $this->encode($val);
@@ -146,6 +145,7 @@ class File_Bittorrent_Encode
             $return .= 'e';
         } else {
             // We build a Dictionary
+            ksort($array, SORT_STRING);
             $return = 'd';
             foreach ($array as $key => $val) {
                 $return .= $this->encode(strval($key));
