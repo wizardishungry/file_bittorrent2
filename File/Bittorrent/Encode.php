@@ -88,7 +88,7 @@ class File_Bittorrent_Encode
     function encode_string($str)
     {
         $str = utf8_encode($str);
-        return sprintf('%d:%s', strlen($str), $str);
+        return sprintf('%s:%s', strlen($str), $str);
     }
 
     /**
@@ -103,7 +103,7 @@ class File_Bittorrent_Encode
     */
     function encode_int($int)
     {
-        return sprintf('i%de', $int);
+        return sprintf('i%se', $int);
     }
 
     /**
