@@ -90,6 +90,13 @@ Array
         )
 
     [size] => 1223132105
+    [announce] => http://69.156.42.20:6969/announce
+    [announce_list] => Array
+        (
+            [0] => http://glimux.sytes.net:6969/announce
+            [1] => http://69.156.42.20:6969/announce
+        )
+                                                
 )
 
 */

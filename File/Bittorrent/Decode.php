@@ -61,7 +61,7 @@ PHP_Compat::loadFunction('file_get_contents');
 class File_Bittorrent_Decode
 {
     /**
-    * @var string   Name of the Torrent
+    * @var string   Name of the torrent
     */
     var $name = '';
     
@@ -81,19 +81,29 @@ class File_Bittorrent_Decode
     var $date = 0;
     
     /**
-    * @var array    Files in the Torrent
+    * @var array    Files in the torrent
     */
     var $files = array();
     
     /**
-    * @var int      Size of of the full Torrent (after download)
+    * @var int      Size of of the full torrent (after download)
     */
     var $size = 0;
     
     /**
-    * @var string   Signature of the software which created the Torrent
+    * @var string   Signature of the software which created the torrent
     */
     var $created_by = '';
+   
+    /**
+    * @var string    tracker (the tracker the torrent has been received from)
+    */
+    var $announce = '';
+
+    /**
+    * @var array     List of known trackers for the torrent
+    */
+    var $announce_list = array();
     
     /**
     * @var string   Source string
@@ -135,14 +145,16 @@ class File_Bittorrent_Decode
         }
         
         // Reset public attributes
-        $this->name       = '';
-        $this->filename   = '';
-        $this->comment    = '';
-        $this->date       = 0;
-        $this->files      = array();
-        $this->size       = 0;
-        $this->created_by = '';
-        $this->_position  = 0;
+        $this->name          = '';
+        $this->filename      = '';
+        $this->comment       = '';
+        $this->date          = 0;
+        $this->files         = array();
+        $this->size          = 0;
+        $this->created_by    = '';
+        $this->announce      = '';
+        $this->announce_list = array();
+        $this->_position     = 0;
 
         // Decode .torrent  
         $this->_source = file_get_contents($file);
@@ -150,22 +162,22 @@ class File_Bittorrent_Decode
         
         // Pull information form decoded data
         $this->filename = basename($file);
-        // Name of the Torrent - statet by the Torrent's author
+        // Name of the torrent - statet by the torrent's author
         $this->name     = $decoded['info']['name'];
-        // Authors may add comments to a Torrent
+        // Authors may add comments to a torrent
         if (isset($decoded['comment'])) {
             $this->comment = $decoded['comment'];
         }
-        // Creation date of the Torrent as unix timestamp
+        // Creation date of the torrent as unix timestamp
         if (isset($decoded['creation date'])) {
             $this->date = $decoded['creation date'];
         }
-        // This contains the signature of the application used to create the Torrent
+        // This contains the signature of the application used to create the torrent
         if (isset($decoded['created by'])) {
             $this->created_by = $decoded['created by'];
         }
         // There is sometimes an array listing all files 
-        // in the Torrent with their individual filesize
+        // in the torrent with their individual filesize
         if (isset($decoded['info']['files']) and is_array($decoded['info']['files'])) {
             foreach ($decoded['info']['files'] as $file) {
                 $this->size += $file['length'];
@@ -176,23 +188,38 @@ class File_Bittorrent_Decode
             }
         }
         // This contains the total length of the files in
-        // the Torrent after the download is completed
+        // the torrent after the download is completed
         // in Bytes
         if (isset($decoded['info']['length']) and $this->size == 0) {
             $this->size = $decoded['info']['length'];
+        }
+
+        // This contains the tracker the torrent has been received from
+        if (isset($decoded['announce'])) {
+            $this->announce = $decoded['announce'];
+        }
+
+        // This contains a list of all known trackers for this torrent
+        if (isset($decoded['announce-list']) and is_array($decoded['announce-list'])) {
+            foreach($decoded['announce-list'] as $item) {
+                if (!isset($item[0])) continue;
+                $this->announce_list[] = $item[0];
+            }
         }
         
         // Currently, I'm not sure how to determine an error
         // Just try to fetch the info from the decoded data
         // and return it
         return array(
-            'name'       => $this->name,
-            'filename'   => $this->filename,
-            'comment'    => $this->comment,
-            'date'       => $this->date,
-            'created_by' => $this->created_by,
-            'files'      => $this->files,
-            'size'       => $this->size,
+            'name'          => $this->name,
+            'filename'      => $this->filename,
+            'comment'       => $this->comment,
+            'date'          => $this->date,
+            'created_by'    => $this->created_by,
+            'files'         => $this->files,
+            'size'          => $this->size,
+            'announce'      => $this->announce,
+            'announce_list' => $this->announce_list,
         );
     }
     
