@@ -17,10 +17,10 @@
         <dep type="pkg" rel="ge" version="1.1.0">PHP_Compat</dep>
     </deps>
     <release>
-        <version>0.1.4</version>
+        <version>0.1.5</version>
         <state>beta</state>
-        <date>2005-02-04</date>
-        <notes>Fixed an infinite loop when dictionaries where not closed properly. Added torrentinfo.php to examples.</notes>
+        <date>2005-02-07</date>
+        <notes>This release *really* fixes Bug #3222, which was not fixed properly in 0.1.3.</notes>
         <filelist>
             <file role="php">File/Bittorrent/Encode.php</file>
             <file role="php">File/Bittorrent/Decode.php</file>
@@ -59,6 +59,12 @@
             <state>beta</state>
             <date>2005-02-04</date>
             <notes>Fixed an infinite loop when dictionaries where not closed properly.</notes>
+        </release>
+        <release>
+            <version>0.1.5</version>
+            <state>beta</state>
+            <date>2005-02-07</date>
+            <notes>This release *really* fixes Bug #3222, which was not fixed properly in 0.1.3.</notes>
         </release>
     </changelog>
 </package>
