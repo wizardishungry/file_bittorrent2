@@ -19,7 +19,7 @@
 /**
 * Encode data in Bittorrent format
 *
-* Based on 
+* Based on
 *   Original Python implementation by Petru Paler <petru@paler.net>
 *   PHP translation by Gerard Krijgsman <webmaster@animesuki.com>
 *   Gerard's regular expressions removed by Carl Ritson <critson@perlfu.co.uk>
@@ -64,37 +64,37 @@ class File_Bittorrent_Decode
     * @var string   Name of the torrent
     */
     var $name = '';
-    
+
     /**
     * @var string   Filename of the torrent
     */
     var $filename = '';
-    
+
     /**
     * @var string   Comment
     */
     var $comment = '';
-    
+
     /**
     * @var int   Creation date as unix timestamp
     */
     var $date = 0;
-    
+
     /**
     * @var array    Files in the torrent
     */
     var $files = array();
-    
+
     /**
     * @var int      Size of of the full torrent (after download)
     */
     var $size = 0;
-    
+
     /**
     * @var string   Signature of the software which created the torrent
     */
     var $created_by = '';
-   
+
     /**
     * @var string    tracker (the tracker the torrent has been received from)
     */
@@ -104,19 +104,19 @@ class File_Bittorrent_Decode
     * @var array     List of known trackers for the torrent
     */
     var $announce_list = array();
-    
+
     /**
     * @var string   Source string
     * @access private
     */
     var $_source = '';
-    
+
     /**
     * @var int      Current position of the string
     * @access private
     */
     var $_position = 0;
-    
+
     /**
     * Decode a Bencoded string
     *
@@ -129,11 +129,11 @@ class File_Bittorrent_Decode
         $this->_position  = 0;
         return $this->_bdecode();
     }
-    
+
     /**
     * Decode .torrent file and accumulate information
     *
-    * @param string    Filename        
+    * @param string    Filename
     * @return mixed    Returns an arrayon success or false on error
     */
     function decodeFile($file)
@@ -143,7 +143,7 @@ class File_Bittorrent_Decode
             PEAR::raiseError('File_Bittorrent_Decode::decode() - Not a file.', null, null, "Given filename '$file' is not a valid file.");
             return false;
         }
-        
+
         // Reset public attributes
         $this->name          = '';
         $this->filename      = '';
@@ -156,10 +156,10 @@ class File_Bittorrent_Decode
         $this->announce_list = array();
         $this->_position     = 0;
 
-        // Decode .torrent  
+        // Decode .torrent
         $this->_source = file_get_contents($file);
         $decoded = $this->_bdecode();
-        
+
         // Pull information form decoded data
         $this->filename = basename($file);
         // Name of the torrent - statet by the torrent's author
@@ -176,7 +176,7 @@ class File_Bittorrent_Decode
         if (isset($decoded['created by'])) {
             $this->created_by = $decoded['created by'];
         }
-        // There is sometimes an array listing all files 
+        // There is sometimes an array listing all files
         // in the torrent with their individual filesize
         if (isset($decoded['info']['files']) and is_array($decoded['info']['files'])) {
             foreach ($decoded['info']['files'] as $file) {
@@ -206,7 +206,7 @@ class File_Bittorrent_Decode
                 $this->announce_list[] = $item[0];
             }
         }
-        
+
         // Currently, I'm not sure how to determine an error
         // Just try to fetch the info from the decoded data
         // and return it
@@ -222,7 +222,7 @@ class File_Bittorrent_Decode
             'announce_list' => $this->announce_list,
         );
     }
-    
+
     /**
     * Decode a BEncoded String
     *
@@ -249,7 +249,7 @@ class File_Bittorrent_Decode
             return $this->_decode_string();
         }
     }
-    
+
     /**
     * Decode a BEncoded dictionary
     *
@@ -281,7 +281,7 @@ class File_Bittorrent_Decode
     *
     * @access private
     * @return string
-    */                
+    */
     function _decode_string()
     {
         // Find position of colon
@@ -292,9 +292,10 @@ class File_Bittorrent_Decode
         $return = substr($this->_source, $pos_colon + 1, $str_length);
         // Move Pointer after string
         $this->_position = $pos_colon + $str_length + 1;
+        $return = utf8_decode($return);
         return $return;
     }
-    
+
     /**
     * Decode a BEncoded integer
     *
@@ -304,7 +305,7 @@ class File_Bittorrent_Decode
     *
     * @access private
     * @return int
-    */                
+    */
     function _decode_int()
     {
         $pos_e  = strpos($this->_source, 'e', $this->_position);
@@ -325,7 +326,7 @@ class File_Bittorrent_Decode
     *
     * @access private
     * @return array
-    */                
+    */
     function _decode_list()
     {
         $char = $this->_getChar();
@@ -341,7 +342,7 @@ class File_Bittorrent_Decode
     * Get the char at the current position
     *
     * @access private
-    * @return string           
+    * @return string
     */
     function _getChar()
     {

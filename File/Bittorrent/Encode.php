@@ -19,7 +19,7 @@
 /**
 * Encode data in Bittorrent format
 *
-* Based on 
+* Based on
 *   Original Python implementation by Petru Paler <petru@paler.net>
 *   PHP translation by Gerard Krijgsman <webmaster@animesuki.com>
 *   Gerard's regular expressions removed by Carl Ritson <critson@perlfu.co.uk>
@@ -57,7 +57,7 @@ class File_Bittorrent_Encode
     *
     * @param mixed    Variable to encode
     * @return string
-    */                
+    */
     function encode($mixed)
     {
         switch (gettype($mixed)) {
@@ -74,7 +74,7 @@ class File_Bittorrent_Encode
             PEAR::raiseError('File_Bittorrent_Encode()::encode() - Unsupported type.', null, null, "Variable must be one of 'string', 'integer' or 'array'");
         }
     }
-    
+
     /**
     * BEncodes a string
     *
@@ -87,9 +87,10 @@ class File_Bittorrent_Encode
     */
     function encode_string($str)
     {
+        $str = utf8_encode($str);
         return sprintf('%d:%s', strlen($str), $str);
     }
-    
+
     /**
     * BEncodes a integer
     *
@@ -104,7 +105,7 @@ class File_Bittorrent_Encode
     {
         return sprintf('i%de', $int);
     }
-    
+
     /**
     * BEncodes an array
     * This code assumes arrays with purely integer indexes are lists,
@@ -119,13 +120,15 @@ class File_Bittorrent_Encode
     * should contain a series of bEncoded elements. For example, the
     * list of strings ["Monduna", "Bit", "Torrents"] would bEncode to
     * l7:Monduna3:Bit8:Torrentse. The list [1, "Monduna", 3, ["Sub", "List"]]
-    * would bEncode to li1e7:Mondunai3el3:Sub4:Listee 
+    * would bEncode to li1e7:Mondunai3el3:Sub4:Listee
     *
     * @param array
     * @return string
     */
     function encode_array($array)
     {
+        // Sort array
+        asort($array, SORT_STRING);
         // Check for strings in the keys
         $isList = true;
         foreach (array_keys($array) as $key) {
