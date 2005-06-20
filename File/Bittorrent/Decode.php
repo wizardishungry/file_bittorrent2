@@ -188,6 +188,7 @@ class File_Bittorrent_Decode
         // in the torrent with their individual filesize
         if (isset($decoded['info']['files']) and is_array($decoded['info']['files'])) {
             foreach ($decoded['info']['files'] as $file) {
+                // We are computing the total size of the download heres
                 $this->size += $file['length'];
                 $this->files[] = array(
                     'filename' => $file['path'][0],
@@ -195,9 +196,8 @@ class File_Bittorrent_Decode
                 );
             }
         }
-        // This contains the total length of the files in
-        // the torrent after the download is completed
-        // in Bytes
+        // If the the info->length field is present we are dealing with
+        // a single file torrent.
         if (isset($decoded['info']['length']) and $this->size == 0) {
             $this->size = $decoded['info']['length'];
         }
@@ -320,7 +320,7 @@ class File_Bittorrent_Decode
     function _decode_int()
     {
         $pos_e  = strpos($this->_source, 'e', $this->_position);
-        $return = substr($this->_source, $this->_position, $pos_e - $this->_position);
+        $return = intval(substr($this->_source, $this->_position, $pos_e - $this->_position));
         $this->_position = $pos_e + 1;
         return $return;
     }
