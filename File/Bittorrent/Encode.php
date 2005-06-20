@@ -61,6 +61,9 @@ class File_Bittorrent_Encode
     function encode($mixed)
     {
         switch (gettype($mixed)) {
+        case is_null($mixed):
+            return $this->encode_string('');
+            break;
         case 'string':
             return $this->encode_string($mixed);
             break;
