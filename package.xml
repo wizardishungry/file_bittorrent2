@@ -17,10 +17,10 @@
         <dep type="pkg" rel="ge" version="1.1.0">PHP_Compat</dep>
     </deps>
     <release>
-        <version>0.1.6</version>
+        <version>0.1.7</version>
         <state>beta</state>
-        <date>2005-02-22</date>
-        <notes>Fix for Bug #3532. Removed integer parsing where not neccessary.</notes>
+        <date>2005-06-20</date>
+        <notes>Fixed Bug #3970 and Bug #4570.</notes>
         <filelist>
             <file role="php">File/Bittorrent/Encode.php</file>
             <file role="php">File/Bittorrent/Decode.php</file>
@@ -71,6 +71,12 @@
             <state>beta</state>
             <date>2005-02-22</date>
             <notes>Fix for Bug #3532. Removed integer parsing where not neccessary.</notes>
+        </release>
+        <release>
+            <version>0.1.7</version>
+            <state>beta</state>
+            <date>2005-06-20</date>
+            <notes>Fixed Bug #3970 and Bug #4570.</notes>
         </release>
     </changelog>
 </package>
