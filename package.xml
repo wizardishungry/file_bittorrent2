@@ -20,7 +20,7 @@
         <version>0.1.7</version>
         <state>beta</state>
         <date>2005-06-20</date>
-        <notes>Fixed Bug #3970 and Bug #4570.</notes>
+        <notes>Fixed Bug #3970 (Encoding integers as strings) and Bug #4570 (Arrays with null values breaks encoding).</notes>
         <filelist>
             <file role="php">File/Bittorrent/Encode.php</file>
             <file role="php">File/Bittorrent/Decode.php</file>
@@ -40,7 +40,7 @@
             <version>0.1.1</version>
             <state>alpha</state>
             <date>2004-06-28</date>
-            <notes>Split encoding and decoding in two classes. Now you can encode vars and decode strings, not only .torrent files.</notes>
+            <notes>Split encoding and decoding in two classes. Now you can encode vars and decode strings, not only .torrent files.</notes
         </release>
         <release>
             <version>0.1.2</version>
@@ -76,7 +76,7 @@
             <version>0.1.7</version>
             <state>beta</state>
             <date>2005-06-20</date>
-            <notes>Fixed Bug #3970 and Bug #4570.</notes>
+            <notes>Fixed Bug #3970 (Encoding integers as strings) and Bug #4570 (Arrays with null values breaks encoding).</notes>
         </release>
     </changelog>
 </package>
