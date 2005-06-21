@@ -339,6 +339,7 @@ class File_Bittorrent_Decode
     */
     function _decode_list()
     {
+    	$return = array();
         $char = $this->_getChar();
         while ($this->_source{$this->_position} != 'e') {
             $val = $this->_bdecode();

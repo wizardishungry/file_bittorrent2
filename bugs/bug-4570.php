@@ -15,6 +15,7 @@ require_once '../File/Bittorrent/Encode.php';
 require_once '../File/Bittorrent/Decode.php';
 $decoder = new File_Bittorrent_Decode;
 $encoder = new File_Bittorrent_Encode;
+error_reporting(E_ALL);
 
 $data = array(
         'broken' => null,
@@ -52,37 +53,25 @@ $decode2 = $decoder->decode($encode2);
 echo "\n" . 'Second decode:' . "\n";
 print_r($decode2);
 
-// Uncomment these lines if you want to see it completely hang (indefinate loop)
-// The string was created by File_Bittorrent_Encode, but it's too hard to reproduce.
-// $string = 'd10:additional8:password32:8943f909f9c2e98f44fa6ffa2ea470eb9:pwdlengthi6e8:username6:nagash8:usertype1:3e';
-// echo $decoder->decode($string);
+$user_array = array(
+    'additional' => array(),
+    'password'   => '8943f909f9c2e98f44fa6ffa2ea470eb',
+    'pwdlength'  => 6,
+    'username'   => 'nagash',
+    'usertype'   => '3',
+);
 
-// tacker: I can confirm that, but I need the original array to verify that this is an actual result of Decode
-// tacker: I think that you used an array like this:
-/*
-    $user_array = array(
-        'additional' => array(
-            'password' => '8943f909f9c2e98f44fa6ffa2ea470eb',
-            'pwdlength' => 6,
-        ),
-        'username' => 'nagash',
-        'usertype' => '3',
-    );
-*/
-// tacker: This produces d10:additionald8:password32:8943f909f9c2e98f44fa6ffa2ea470eb9:pwdlengthi6ee8:username6:nagash8:usertype1:3e
-// tacker: which can be decoded properly
-/*
-    $user_array_encoded = $encoder->encode($user_array);
-    echo "\n";
-    echo "User_array:\n";
-    echo print_r($user_array) . "\n";
-    echo "Encoded user_array:\n";
-    echo $user_array_encoded . "\n";
-    echo "Decoded encoded user_array:\n";
-    echo print_r($decoder->decode($user_array_encoded)) . "\n";
-*/
+$user_array_encoded = $encoder->encode($user_array);
+echo "\n";
+echo "User_array:\n";
+var_dump($user_array);
+echo "\n\n";
+echo "Encoded user_array:\n";
+echo $user_array_encoded . "\n\n";
+echo "Decoded encoded user_array:\n";
+var_dump($decoder->decode($user_array_encoded));
+echo "\n\n";
 
-echo "\n\n" . 'What The!? Hello World! :)';
 echo '</pre>';
 
 ?>
