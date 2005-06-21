@@ -17,10 +17,10 @@
         <dep type="pkg" rel="ge" version="1.1.0">PHP_Compat</dep>
     </deps>
     <release>
-        <version>0.1.7</version>
+        <version>0.1.8</version>
         <state>beta</state>
-        <date>2005-06-20</date>
-        <notes>Fixed Bug #3970 (Encoding integers as strings) and Bug #4570 (Arrays with null values breaks encoding).</notes>
+        <date>2005-06-21</date>
+        <notes>Fixed Bug #4570 (Array with empty array values were not decoded properly).</notes>
         <filelist>
             <file role="php">File/Bittorrent/Encode.php</file>
             <file role="php">File/Bittorrent/Decode.php</file>
@@ -40,7 +40,7 @@
             <version>0.1.1</version>
             <state>alpha</state>
             <date>2004-06-28</date>
-            <notes>Split encoding and decoding in two classes. Now you can encode vars and decode strings, not only .torrent files.</notes
+            <notes>Split encoding and decoding in two classes. Now you can encode vars and decode strings, not only .torrent files.</notes>
         </release>
         <release>
             <version>0.1.2</version>
@@ -77,6 +77,12 @@
             <state>beta</state>
             <date>2005-06-20</date>
             <notes>Fixed Bug #3970 (Encoding integers as strings) and Bug #4570 (Arrays with null values breaks encoding).</notes>
+        </release>
+        <release>
+            <version>0.1.8</version>
+            <state>beta</state>
+            <date>2005-06-21</date>
+            <notes>Fixed Bug #4570 (Array with empty array values were not decoded properly).</notes>
         </release>
     </changelog>
 </package>
