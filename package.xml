@@ -2,8 +2,8 @@
 <package version="1.0">
     <name>File_Bittorrent</name>
     <summary>Decode and Encode data in Bittorrent format</summary>
-    <description>This package consists of two classes which handles the encoding and decoding of data in Bittorrent format.
-    You can also extract useful informations from .torrent files.</description>
+    <description>This package consists of thre classes which handles the encoding and decoding of data in Bittorrent format.
+    You can also extract useful informations from .torrent files and create .torrent files.</description>
     <license>PHP License</license>
     <maintainers>
         <maintainer>
@@ -17,14 +17,16 @@
         <dep type="pkg" rel="ge" version="1.1.0">PHP_Compat</dep>
     </deps>
     <release>
-        <version>0.1.8</version>
+        <version>1.0.0RC1</version>
         <state>beta</state>
-        <date>2005-06-21</date>
-        <notes>Fixed Bug #4570 (Array with empty array values were not decoded properly).</notes>
+        <date>2005-07-20</date>
+        <notes>Removed UTF-8 de- and encoding. Added File_Bittorrent_MakeTorrent which creates .torrent files.</notes>
         <filelist>
             <file role="php">File/Bittorrent/Encode.php</file>
             <file role="php">File/Bittorrent/Decode.php</file>
+            <file role="php">File/Bittorrent/MakeTorrent.php</file>
             <file role="doc">example.php</file>
+            <file role="doc">example_mktorrent.php</file>
             <file role="doc">torrentinfo.php</file>
             <file role="doc">freebsd.torrent</file>
         </filelist>
@@ -83,6 +85,12 @@
             <state>beta</state>
             <date>2005-06-21</date>
             <notes>Fixed Bug #4570 (Array with empty array values were not decoded properly).</notes>
+        </release>
+        <release>
+            <version>1.0.0RC1</version>
+            <state>beta</state>
+            <date>2005-07-20</date>
+            <notes>Removed UTF-8 de- and encoding which fixes invalid info_hashes. Added File_Bittorrent_MakeTorrent which creates .torrent files.</notes>
         </release>
     </changelog>
 </package>
