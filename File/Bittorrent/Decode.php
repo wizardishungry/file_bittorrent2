@@ -303,7 +303,6 @@ class File_Bittorrent_Decode
         $return = substr($this->_source, $pos_colon + 1, $str_length);
         // Move Pointer after string
         $this->_position = $pos_colon + $str_length + 1;
-        $return = utf8_decode($return);
         return $return;
     }
 

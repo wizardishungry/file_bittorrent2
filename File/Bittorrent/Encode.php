@@ -90,7 +90,6 @@ class File_Bittorrent_Encode
     */
     function encode_string($str)
     {
-        $str = utf8_encode($str);
         return sprintf('%s:%s', strlen($str), $str);
     }
 
