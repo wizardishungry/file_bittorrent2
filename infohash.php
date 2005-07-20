@@ -46,12 +46,5 @@
     
     exec('/usr/bin/btshowmetainfo.py ' . escapeshellarg($torrent), $bt);
     echo "btshowmetainfo: " . substr($bt[3], strpos($bt[3], ':') + 2) . "\n";
-    
-    // Gagge's version from http://pear.php.net/bugs/bug.php?id=3970
-    $filesrc = file_get_contents($torrent);
-	$start = strpos($filesrc, 'd5:files');
-	$match = substr($filesrc, $start, (strlen($filesrc)-$start-1));
-	$file_info['info_hash'] = sha1($match);
-	echo "gagge:          " . $file_info['info_hash'] . "\n";
-
+   
 ?>
