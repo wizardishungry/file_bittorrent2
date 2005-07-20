@@ -14,7 +14,9 @@
 // | obtain it through the world-wide-web, please send a note to            |
 // | license@php.net so we can mail you a copy immediately.                 |
 // +------------------------------------------------------------------------+
-// | Author: Justin Jones <j.nagash@gmail.com>                              |
+// | Authors                                                                |
+// |   Justin Jones <j.nagash@gmail.com>                                    |
+// |   Markus Tacker <m@tacker.org>                                         |
 // +------------------------------------------------------------------------+
 //
 
@@ -24,123 +26,109 @@
  * identical torrent files as btmaketorrent.py
  * from Bram Cohen's original BT client.
  *
+ * @author Justin Jones <j.nagash@gmail.com>
+ * @author Markus Tacker <m@tacker.org>
+ * @version $Id$
  * @package File_Bittorrent
  * @category File
- *
- * @author  Justin Jones <j.nagash@gmail.com>
- *
- * @version $Id$
  */
+ 
+/**
+ * Include required classes
+ */
+require_once 'PEAR.php';
+require_once 'File/Bittorrent/Encode.php';
 
 /**
- * Creates .torrent files
+ * Provides a class for making .torrent files
+ * from a file or directory. Produces virtually
+ * identical torrent files as btmaketorrent.py
+ * from Bram Cohen's original BT client.
  *
+ * @author Justin Jones <j.nagash@gmail.com>
+ * @author Markus Tacker <m@tacker.org>
+ * @version $Id$
  * @package File_Bittorrent
  * @category File
  */
 class File_Bittorrent_MakeTorrent
 {
     /**
-     * Path to the file or directory to create the
-     * torrent from.
-     *
-     * @var string
+     * @var string Path to the file or directory to create the torrent from.
+     * @access private
      */
-    var $path = '';
+    var $_path = '';
 
     /**
-     * Whether or not $path is a file
-     *
-     * @var bool
+     * @var bool Whether or not $path is a file
+     * @access private
      */
-    var $_isFile = false;
+    var $_is_file = false;
 
     /**
-     * Where or not $path is a directory
-     *
-     * @var bool
+     * @var bool Where or not $path is a directory
      */
-    var $_isDir = false;
+    var $_is_dir = false;
 
     /**
-     * The .torrent info dictionary
-     *
-     * @var array
+     * @var string The .torrent announce URL
+     * @access private
      */
-    var $info = array();
+    var $_announce = '';
 
     /**
-     * The .torrent announce URL
-     *
-     * @var string
+     * @var array The .torrent announce_list extension
+     * @access private
      */
-    var $announce = '';
+    var $_announce_list = array();
 
     /**
-     * The .torrent announce_list extension
-     *
-     * @var array
+     * @var string The .torrent comment
+     * @access private
      */
-    var $announce_list = array();
+    var $_comment = '';
 
     /**
-     * The .torrent creation timestamp
-     *
-     * @var int
+     * @var string The .torrent created by string
+     * @access private
      */
-    var $creation_date = 0;
+    var $_created_by = 'File_Bittorrent_MakeTorrent $Rev$. http://pear.php.net/package/File_Bittorrent';
+    
+    /**
+     * @var string The .torrent suggested name (file/dir)
+     * @access private
+     */
+    var $_name = '';
 
     /**
-     * The .torrent comment
-     *
-     * @var string
+     * @var string The .torrent packed piece data
+     * @access private
      */
-    var $comment = '';
+    var $_pieces = '';
 
     /**
-     * The .torrent created by string
-     *
-     * @var string
+     * @var int The size of each piece in bytes.
+     * @access private
      */
-    var $created_by = 'File_Bittorrent_MakeTorrent $Rev$';
+    var $_piece_length = 524288;
 
     /**
-     * The .torrent suggested name (file/dir)
-     *
-     * @var string
+     * @var array The list of files (if this is a multi-file torrent)
+     * @access private
      */
-    var $name = '';
+    var $_files = array();
 
     /**
-     * The .torrent packed piece data
-     *
-     * @var string
+     * @var string|false The data gap used to join two files into the same piece. string if it contains data or false
+     * @access private
      */
-    var $pieces = '';
-
+    var $_data_gap = false;
+    
     /**
-     * The .torrent piece length
-     * The size of each piece in bytes.
-     *
-     * @var int
-     */
-    var $piece_length = 524288;
-
-    /**
-     * The list of files (if this is
-     * a multi-file torrent)
-     *
-     * @var array
-     */
-    var $files = array();
-
-    /**
-     * The data gap used to join two
-     * files into the same piece
-     *
-     * @var mixed string if it contains data or boolean false
-     */
-    var $data_gap = false;
+    * @var resource file pointer
+    * @access private
+    */
+    var $_fp;
 
     /**
      * Constructor
@@ -149,21 +137,10 @@ class File_Bittorrent_MakeTorrent
      * a torrent from
      *
      * @param string Path to use
-     * @return voide
-     * @access public
      */
     function File_Bittorrent_MakeTorrent($path)
     {
-        $this->path = $path;
-        if (is_dir($path)) {
-            $this->_isDir = true;
-            $this->name = basename($path);
-        } else if (is_file($path)) {
-            $this->_isFile = true;
-            $this->name = basename($path);
-        } else {
-            $this->path = '';
-        }
+        $this->setPath($path);
     }
 
     /**
@@ -171,12 +148,12 @@ class File_Bittorrent_MakeTorrent
      * the .torrent file
      *
      * @param string announce url
-     * @return void
-     * @access public
+     * @return bool
      */
     function setAnnounce($announce)
     {
-        $this->announce = strval($announce);
+        $this->_announce = strval($announce);
+        return true;
     }
 
     /**
@@ -184,15 +161,16 @@ class File_Bittorrent_MakeTorrent
      * the .torrent file
      *
      * @param array announce list
-     * @return void
-     * @access public
+     * @return bool
      */
     function setAnnounceList($announce_list)
     {
-        if (is_array($announce_list))
-        {
-            $this->announce_list = $announce_list;
+        if (!is_array($announce_list)) {
+        	PEAR::raiseError(__CLASS__ . '::'. __FUNCTION__ . '() - No array given.');
+			return false;
         }
+        $this->_announce_list = $announce_list;
+        return true;
     }
 
     /**
@@ -200,26 +178,12 @@ class File_Bittorrent_MakeTorrent
      * .torrent file
      *
      * @param string comment
-     * @return void
-     * @access public
+     * @return bool
      */
     function setComment($comment)
     {
-        $this->comment = strval($comment);
-    }
-
-    /**
-     * Function to set the created by timestamp
-     * for the .torrent file. If you don't want
-     * to use the servers current timestamp
-     *
-     * @param int timestamp
-     * @return void
-     * @access public
-     */
-    function setCreatedBy($created_by)
-    {
-        $this->created_by = strval($created_by);
+        $this->_comment = strval($comment);
+        return true;
     }
 
     /**
@@ -228,21 +192,21 @@ class File_Bittorrent_MakeTorrent
      * Can also be set through the constructor.
      *
      * @param string path to file/dir
-     * @return void
-     * @access public
+     * @return bool
      */
     function setPath($path)
     {
-        $this->path = $path;
+        $this->_path = $path;
         if (is_dir($path)) {
-            $this->_isDir = true;
-            $this->name = basename($path);
+            $this->_is_dir = true;
+            $this->_name = basename($path);
         } else if (is_file($path)) {
-            $this->_isFile = true;
-            $this->name = basename($path);
+            $this->_is_file = true;
+            $this->_name = basename($path);
         } else {
-            $this->path = '';
+            $this->_path = '';
         }
+        return true;
     }
 
     /**
@@ -251,14 +215,16 @@ class File_Bittorrent_MakeTorrent
      * min: 32 (32KB), max: 4096 (4MB)
      *
      * @param int piece length in kilobytes
-     * @return void
-     * @access public
+     * @return bool
      */
     function setPieceLength($piece_length)
     {
-        if ($piece_length >= 32 && $piece_length <= 4096) {
-            $this->piece_length = $piece_length * 1024;
+        if ($piece_length < 32 or $piece_length > 4096) {
+        	PEAR::raiseError(__CLASS__ . '::'. __FUNCTION__ . '() - Invalid piece lenth: "' . $piece_length . '"');
+			return false;
         }
+        $this->_piece_length = $piece_length * 1024;
+        return true;
     }
 
     /**
@@ -267,25 +233,23 @@ class File_Bittorrent_MakeTorrent
      * with the set* functions.
      *
      * @return mixed false on failure or a string containing the metainfo
-     * @access public
      */
     function buildTorrent()
     {
-        if ($this->_isFile) {
-            $info = $this->_addFile($this->path);
-            if ($info !== false) {
-                $metainfo = $this->_encodeTorrent($info);
-                return $metainfo;
+        if ($this->_is_file) {
+            if (!$info = $this->_addFile($this->_path)) {
+				return false;
             }
-        } else if ($this->_isDir) {
-            $diradd_ok = $this->_addDir($this->path);
-            if ($diradd_ok !== false) {
-                $metainfo = $this->_encodeTorrent();
-                return $metainfo;
+            if (!$metainfo = $this->_encodeTorrent($info)) {
+				return false;
+            }            
+        } else if ($this->_is_dir) {
+            if (!$diradd_ok = $this->_addDir($this->_path)) {
+				return false;
             }
-        } else {
-            return false;
+            $metainfo = $this->_encodeTorrent();
         }
+        return $metainfo;
     }
 
     /**
@@ -298,32 +262,32 @@ class File_Bittorrent_MakeTorrent
      */
     function _encodeTorrent($info = array())
     {
-        require_once 'File/Bittorrent/Encode.php';
-        $benc = new File_Bittorrent_Encode;
-
         $bencdata = array();
         $bencdata['info'] = array();
-        if ($this->_isFile) {
+        if ($this->_is_file) {
             $bencdata['info']['length'] = $info['length'];
             $bencdata['info']['md5sum'] = $info['md5sum'];
-        } else if ($this->_isDir) {
-            if ($this->data_gap !== false) {
-                $this->pieces .= pack('H*', sha1($this->data_gap));
-                $this->data_gap = false;
+        } else if ($this->_is_dir) {
+            if ($this->_data_gap !== false) {
+                $this->_pieces .= pack('H*', sha1($this->_data_gap));
+                $this->_data_gap = false;
             }
-            $bencdata['info']['files'] = $this->files;
+            $bencdata['info']['files'] = $this->_files;
         } else {
+        	PEAR::raiseError(__CLASS__ . '::'. __FUNCTION__ . '() - Use ' .  __CLASS__ . '::setPath() to define a file or directory.');
             return false;
         }
-        $bencdata['info']['name'] = $this->name;
-        $bencdata['info']['piece length'] = $this->piece_length;
-        $bencdata['info']['pieces'] = $this->pieces;
-        $bencdata['announce'] = $this->announce;
-        //$bencdata['announce-list'] = array($this->announce)
-        $bencdata['creation date'] = time();
-        $bencdata['comment'] = $this->comment;
-        $bencdata['created by'] = $this->created_by;
-        return $benc->encode_array($bencdata);
+        $bencdata['info']['name']         = $this->_name;
+        $bencdata['info']['piece length'] = $this->_piece_length;
+        $bencdata['info']['pieces']       = $this->_pieces;
+        $bencdata['announce']             = $this->_announce;
+        $bencdata['creation date']        = time();
+        $bencdata['comment']              = $this->_comment;
+        $bencdata['created by']           = $this->_created_by;
+        // $bencdata['announce-list'] = array($this->_announce)
+        // Encode it
+        $Encoder = new File_Bittorrent_Encode;
+        return $Encoder->encode_array($bencdata);
     }
 
     /**
@@ -332,69 +296,65 @@ class File_Bittorrent_MakeTorrent
      *
      * @param string path to the file
      * @return mixed false on failure or file metainfo data
-     * @access private
-     */
+	 * @access private
+	 */
     function _addFile($file)
     {
-        $fp = &File_Bittorrent_MakeTorrent::_openfile($file);
-        if ($fp) {
-            $filelength = 0;
-            $md5sum = md5_file($file);
-            $piece_length = $this->piece_length;
+    	if (!$this->_openFile($file)) return false;
+        
+        $filelength = 0;
+        $md5sum = md5_file($file);
 
-            while (!feof($fp)) {
-                $data = '';
-                $datalength = 0;
+        while (!feof($this->_fp)) {
+            $data = '';
+            $datalength = 0;
 
-                if ($this->_isDir && $this->data_gap !== false) {
-                    $data = $this->data_gap;
-                    $datalength = strlen($data);
-                    $this->data_gap = false;
+            if ($this->_is_dir && $this->_data_gap !== false) {
+                $data = $this->_data_gap;
+                $datalength = strlen($data);
+                $this->_data_gap = false;
+            }
+
+            while (!feof($this->_fp) && ($datalength < $this->_piece_length)) {
+                $readlength = 8192;
+                if (($datalength + 8192) > $this->_piece_length) {
+                    $readlength = $this->_piece_length - $datalength;
                 }
 
-                while ( !feof($fp) && ($datalength < $piece_length) ) {
-                    $readlength = 8192;
-                    if ( ($datalength + 8192) > $piece_length ) {
-                        $readlength = $piece_length - $datalength;
-                    }
+                $tmpdata = fread($this->_fp, $readlength);
+                $actual_readlength = strlen($tmpdata);
+                $datalength += $actual_readlength;
+                $filelength += $actual_readlength;
 
-                    $tmpdata = fread($fp, $readlength);
-                    $actual_readlength = strlen($tmpdata);
-                    $datalength += $actual_readlength;
-                    $filelength += $actual_readlength;
+                $data .= $tmpdata;
 
-                    $data .= $tmpdata;
+                flush();
+            }
 
-                    flush();
-                }
-
-                /* We've either reached the end of the file, or
-                 * we have a whole piece, or
-                 * both.
-                 */
-                if ($datalength == $piece_length) {
-                    // We have a piece.
-                    $this->pieces .= pack('H*', sha1($data));
-                }
-                if ( ($datalength != $piece_length) && feof($fp) ) {
-                    // We've reached the end of the file, and
-                    // we dont have a whole piece.
-                    if ($this->_isDir) {
-                        $this->data_gap = $data;
-                    } else {
-                        $this->pieces .= pack('H*', sha1($data));
-                    }
+            // We've either reached the end of the file, or
+            // we have a whole piece, or both.
+            if ($datalength == $this->_piece_length) {
+                // We have a piece.
+                $this->_pieces .= pack('H*', sha1($data));
+            }
+            if (($datalength != $this->_piece_length) && feof($this->_fp)) {
+                // We've reached the end of the file, and
+                // we dont have a whole piece.
+                if ($this->_is_dir) {
+                    $this->_data_gap = $data;
+                } else {
+                    $this->_pieces .= pack('H*', sha1($data));
                 }
             }
-            // Close the file pointer.
-            File_Bittorrent_MakeTorrent::_closefile($fp);
-            $info = array(
-                    'length' => $filelength,
-                    'md5sum' => $md5sum
-                    );
-            return $info;
         }
-        return false;
+
+        // Close the file pointer.
+        $this->_closeFile();
+        $info = array(
+            'length' => $filelength,
+            'md5sum' => $md5sum
+        );
+        return $info;
     }
 
     /**
@@ -417,12 +377,12 @@ class File_Bittorrent_MakeTorrent
                 $filedata['path'] = array();
                 $filedata['path'][] = basename($file);
                 $dirname = dirname($file);
-                while ( basename($dirname) != $this->name ) {
+                while (basename($dirname) != $this->_name) {
                     $filedata['path'][] = basename($dirname);
                     $dirname = dirname($dirname);
                 }
                 $filedata['path'] = array_reverse($filedata['path'], false);
-                $this->files[] = $filedata;
+                $this->_files[] = $filedata;
             }
         }
     }
@@ -445,14 +405,12 @@ class File_Bittorrent_MakeTorrent
             $current_dir = array_pop($stack);
             if ($dh = opendir($current_dir)) {
                 while ( ($file = readdir($dh)) !== false ) {
-                    if ($file !== '.' && $file !== '..') {
-                        $current_file = $current_dir . '/' . $file;
-
-                        if ( is_file($current_file) ) {
-                            $file_list[] = $current_dir . '/' . $file;
-                        } else if ( is_dir($current_file) ) {
-                            $stack[] = $current_file;
-                        }
+                	if ($file{0} =='.') continue;
+                    $current_file = $current_dir . '/' . $file;
+                    if (is_file($current_file)) {
+                        $file_list[] = $current_dir . '/' . $file;
+                    } else if (is_dir($current_file)) {
+                        $stack[] = $current_file;
                     }
                 }
             }
@@ -468,10 +426,12 @@ class File_Bittorrent_MakeTorrent
      * @return int the filesize
      * @access private
      */
-    function _filesize($file) {
+    function _filesize($file)
+	{
         $size = @filesize($file);
         if ($size == 0) {
-            $size = exec('du -b "'.$file.'"');
+        	if (PHP_OS != 'Linux') return false; 
+            $size = exec('du -b ' . escapeshellarg($file));
         }
         return $size;
     }
@@ -481,33 +441,40 @@ class File_Bittorrent_MakeTorrent
      * Workaround for files >2GB using popen
      *
      * @param string path to the file
-     * @return mixed file pointer or false
+     * @return bool
      * @access private
      */
-    function &_openfile($file) {
-        $fsize = File_Bittorrent_MakeTorrent::_filesize($file);
+    function _openFile($file)
+	{
+        $fsize = $this->_filesize($file);
         if ($fsize <= 2*1024*1024*1024) {
-            $fp = fopen($file, 'r');
+        	if (!$this->_fp = fopen($file, 'r')) {
+        		PEAR::raiseError(__CLASS__ . '::'. __FUNCTION__ . '() - Failed to open "' . $file . '"');
+				return false;
+        	}
             $this->_fopen = true;
         } else {
-            $fp = popen('cat "'.$file.'"', 'r');
+        	if (PHP_OS != 'Linux') {
+        		PEAR::raiseError(__CLASS__ . '::'. __FUNCTION__ . '() - File size is greater than 2GB. This is only supported under Linux.');
+				return false;
+        	}
+            $this->_fp = popen('cat ' . escapeshellarg($file), 'r');
             $this->_fopen = false;
         }
-        return $fp;
+        return true;
     }
 
     /**
      * Internal function to close a file pointer
      *
-     * @param resource File Pointer
      * @access private
      */
-    function _closefile(&$fp)
+    function _closeFile()
     {
-        if ($this->_fopen == true) {
-            fclose($fp);
-        } else {
-            pclose($fp);
+    	if ($this->_fopen) {
+			fclose($this->_fp);
+    	} else {
+            pclose($this->_fp);
         }
     }
 }
