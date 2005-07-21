@@ -17,10 +17,10 @@
         <dep type="pkg" rel="ge" version="1.1.0">PHP_Compat</dep>
     </deps>
     <release>
-        <version>1.0.0RC1</version>
+        <version>1.0.0RC2</version>
         <state>beta</state>
-        <date>2005-07-20</date>
-        <notes>Removed UTF-8 de- and encoding. Added File_Bittorrent_MakeTorrent which creates .torrent files.</notes>
+        <date>tba</date>
+        <notes>Added querying of the tracker to decoder.</notes>
         <filelist>
             <file role="php">File/Bittorrent/Encode.php</file>
             <file role="php">File/Bittorrent/Decode.php</file>
@@ -28,7 +28,8 @@
             <file role="doc">example.php</file>
             <file role="doc">example_mktorrent.php</file>
             <file role="doc">torrentinfo.php</file>
-            <file role="doc">freebsd.torrent</file>
+            <file role="doc">scrape.php</file>
+            <file role="doc">install-x86-universal-2005.0.iso.torrent</file>
         </filelist>
     </release>
     <changelog>
@@ -91,6 +92,12 @@
             <state>beta</state>
             <date>2005-07-20</date>
             <notes>Removed UTF-8 de- and encoding which fixes invalid info_hashes. Added File_Bittorrent_MakeTorrent which creates .torrent files.</notes>
+        </release>
+        <release>
+            <version>1.0.0RC2</version>
+            <state>beta</state>
+            <date>tba</date>
+            <notes>Added querying of the tracker to decoder.</notes>
         </release>
     </changelog>
 </package>
