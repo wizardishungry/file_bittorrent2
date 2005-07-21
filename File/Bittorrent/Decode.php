@@ -23,9 +23,7 @@
 *   Original Python implementation by Petru Paler <petru@paler.net>
 *   PHP translation by Gerard Krijgsman <webmaster@animesuki.com>
 *   Gerard's regular expressions removed by Carl Ritson <critson@perlfu.co.uk>
-*
 * Info on the .torrent file format
-*
 * BEncoding is a simple, easy to implement method of associating
 * data types with information in a file. The values in a torrent
 * file are bEncoded.
@@ -35,9 +33,7 @@
 *
 * @package File_Bittorrent
 * @category File
-*
 * @author Markus Tacker <m@tacker.org>
-*
 * @version $Id$
 */
 
@@ -46,6 +42,7 @@
 */
 require_once 'PEAR.php';
 require_once 'PHP/Compat.php';
+require_once 'File/Bittorrent/Encode.php';
 
 /**
 * Load replacement functions
@@ -53,10 +50,23 @@ require_once 'PHP/Compat.php';
 PHP_Compat::loadFunction('file_get_contents');
 
 /**
-* Decode .torrent files
+* Encode data in Bittorrent format
+*
+* Based on
+*   Original Python implementation by Petru Paler <petru@paler.net>
+*   PHP translation by Gerard Krijgsman <webmaster@animesuki.com>
+*   Gerard's regular expressions removed by Carl Ritson <critson@perlfu.co.uk>
+* Info on the .torrent file format
+* BEncoding is a simple, easy to implement method of associating
+* data types with information in a file. The values in a torrent
+* file are bEncoded.
+* There are 4 different data types that can be bEncoded:
+* Integers, Strings, Lists and Dictionaries.
+* [http://www.monduna.com/bt/faq.html]
 *
 * @package File_Bittorrent
 * @category File
+* @author Markus Tacker <m@tacker.org>
 */
 class File_Bittorrent_Decode
 {
@@ -124,6 +134,11 @@ class File_Bittorrent_Decode
     var $_position = 0;
 
     /**
+    * @var string   Info hash
+    */
+    var $info_hash;
+
+    /**
     * Decode a Bencoded string
     *
     * @param string
@@ -162,11 +177,16 @@ class File_Bittorrent_Decode
         $this->announce      = '';
         $this->announce_list = array();
         $this->_position     = 0;
+        $this->info_hash     = '';
 
         // Decode .torrent
         $this->_source = file_get_contents($file);
         $this->_source_length = strlen($this->_source);
         $decoded = $this->_bdecode();
+
+        // Compute info_hash
+        $Encoder = new File_Bittorrent_Encode;
+        $this->info_hash = sha1($Encoder->encode($decoded['info']));
 
         // Pull information form decoded data
         $this->filename = basename($file);
@@ -338,7 +358,7 @@ class File_Bittorrent_Decode
     */
     function _decode_list()
     {
-    	$return = array();
+        $return = array();
         $char = $this->_getChar();
         while ($this->_source{$this->_position} != 'e') {
             $val = $this->_bdecode();
@@ -359,6 +379,24 @@ class File_Bittorrent_Decode
         if (empty($this->_source)) return false;
         if ($this->_position >= $this->_source_length) return false;
         return $this->_source{$this->_position};
+    }
+
+    /**
+    * Returns the online stats for the torrent
+    *
+    * @return array|false
+    */
+    function getStats()
+    {
+        $packed_hash = pack('H*', $this->info_hash);
+        $scrape_url = preg_replace('/\/announce$/', '/scrape', $this->announce) . '?info_hash=' . urlencode($packed_hash);
+        $scrape_data = file_get_contents($scrape_url);
+        $stats = $this->decode($scrape_data);
+        if (!isset($stats['files'][$packed_hash])) {
+            PEAR::raiseError('File_Bittorrent_Decode::getStats() - Invalid scrape data: "' . $scrape_data . '"');
+            return false;
+        }
+        return $stats['files'][$packed_hash];
     }
 }
 
