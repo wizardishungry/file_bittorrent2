@@ -23,7 +23,6 @@
 *   Original Python implementation by Petru Paler <petru@paler.net>
 *   PHP translation by Gerard Krijgsman <webmaster@animesuki.com>
 *   Gerard's regular expressions removed by Carl Ritson <critson@perlfu.co.uk>
-*
 * BEncoding is a simple, easy to implement method of associating
 * data types with information in a file. The values in a torrent
 * file are bEncoded.
@@ -33,9 +32,7 @@
 *
 * @package File_Bittorrent
 * @category File
-*
 * @author Markus Tacker <m@tacker.org>
-*
 * @version $Id$
 */
 
@@ -45,10 +42,22 @@
 require_once 'PEAR.php';
 
 /**
-* Encode files in Bittorrent format
+* Encode data in Bittorrent format
+*
+* Based on
+*   Original Python implementation by Petru Paler <petru@paler.net>
+*   PHP translation by Gerard Krijgsman <webmaster@animesuki.com>
+*   Gerard's regular expressions removed by Carl Ritson <critson@perlfu.co.uk>
+* BEncoding is a simple, easy to implement method of associating
+* data types with information in a file. The values in a torrent
+* file are bEncoded.
+* There are 4 different data types that can be bEncoded:
+* Integers, Strings, Lists and Dictionaries.
+* [http://www.monduna.com/bt/faq.html]
 *
 * @package File_Bittorrent
 * @category File
+* @author Markus Tacker <m@tacker.org>
 */
 class File_Bittorrent_Encode
 {
