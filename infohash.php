@@ -2,7 +2,7 @@
 
     /**
     * Info-Hash Test
-    * Get Info from a .torrent file
+    * Compares the info_hash compution of this package to the original program implementation
     *
     * Usage:
     *   # php infohash.php -t file.torrent
@@ -11,9 +11,10 @@
     * @version $Id$
     */
 
+    error_reporting(E_ALL);
+
     // Includes
     require_once 'File/Bittorrent/Decode.php';
-    require_once 'File/Bittorrent/Encode.php';
     require_once 'Console/Getargs.php';
 
     // Get filename from command line
@@ -37,14 +38,13 @@
     }
 
     $File_Bittorrent_Decode = new File_Bittorrent_Decode;
-    $File_Bittorrent_Encode = new File_Bittorrent_Encode;
-    $decoded = $File_Bittorrent_Decode->decode(file_get_contents($torrent));
+    $File_Bittorrent_Decode->decodeFile($torrent);
 
     echo "\nInfo Hash\n";
     echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
-    echo "This:           " . sha1($File_Bittorrent_Encode->encode($decoded['info'])) . "\n";
-    
+    echo "This:           " . $File_Bittorrent_Decode->info_hash . "\n";
+
     exec('/usr/bin/btshowmetainfo.py ' . escapeshellarg($torrent), $bt);
     echo "btshowmetainfo: " . substr($bt[3], strpos($bt[3], ':') + 2) . "\n";
-   
+
 ?>
