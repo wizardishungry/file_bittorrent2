@@ -32,7 +32,7 @@
  * @package File_Bittorrent
  * @category File
  */
- 
+
 /**
  * Include required classes
  */
@@ -47,7 +47,6 @@ require_once 'File/Bittorrent/Encode.php';
  *
  * @author Justin Jones <j.nagash@gmail.com>
  * @author Markus Tacker <m@tacker.org>
- * @version $Id$
  * @package File_Bittorrent
  * @category File
  */
@@ -93,7 +92,7 @@ class File_Bittorrent_MakeTorrent
      * @access private
      */
     var $_created_by = 'File_Bittorrent_MakeTorrent $Rev$. http://pear.php.net/package/File_Bittorrent';
-    
+
     /**
      * @var string The .torrent suggested name (file/dir)
      * @access private
@@ -123,7 +122,7 @@ class File_Bittorrent_MakeTorrent
      * @access private
      */
     var $_data_gap = false;
-    
+
     /**
     * @var resource file pointer
     * @access private
@@ -166,8 +165,8 @@ class File_Bittorrent_MakeTorrent
     function setAnnounceList($announce_list)
     {
         if (!is_array($announce_list)) {
-        	PEAR::raiseError(__CLASS__ . '::'. __FUNCTION__ . '() - No array given.');
-			return false;
+            PEAR::raiseError(__CLASS__ . '::'. __FUNCTION__ . '() - No array given.');
+            return false;
         }
         $this->_announce_list = $announce_list;
         return true;
@@ -220,8 +219,8 @@ class File_Bittorrent_MakeTorrent
     function setPieceLength($piece_length)
     {
         if ($piece_length < 32 or $piece_length > 4096) {
-        	PEAR::raiseError(__CLASS__ . '::'. __FUNCTION__ . '() - Invalid piece lenth: "' . $piece_length . '"');
-			return false;
+            PEAR::raiseError(__CLASS__ . '::'. __FUNCTION__ . '() - Invalid piece lenth: "' . $piece_length . '"');
+            return false;
         }
         $this->_piece_length = $piece_length * 1024;
         return true;
@@ -238,14 +237,14 @@ class File_Bittorrent_MakeTorrent
     {
         if ($this->_is_file) {
             if (!$info = $this->_addFile($this->_path)) {
-				return false;
+                return false;
             }
             if (!$metainfo = $this->_encodeTorrent($info)) {
-				return false;
-            }            
+                return false;
+            }
         } else if ($this->_is_dir) {
             if (!$diradd_ok = $this->_addDir($this->_path)) {
-				return false;
+                return false;
             }
             $metainfo = $this->_encodeTorrent();
         }
@@ -274,7 +273,7 @@ class File_Bittorrent_MakeTorrent
             }
             $bencdata['info']['files'] = $this->_files;
         } else {
-        	PEAR::raiseError(__CLASS__ . '::'. __FUNCTION__ . '() - Use ' .  __CLASS__ . '::setPath() to define a file or directory.');
+            PEAR::raiseError(__CLASS__ . '::'. __FUNCTION__ . '() - Use ' .  __CLASS__ . '::setPath() to define a file or directory.');
             return false;
         }
         $bencdata['info']['name']         = $this->_name;
@@ -296,12 +295,12 @@ class File_Bittorrent_MakeTorrent
      *
      * @param string path to the file
      * @return mixed false on failure or file metainfo data
-	 * @access private
-	 */
+     * @access private
+     */
     function _addFile($file)
     {
-    	if (!$this->_openFile($file)) return false;
-        
+        if (!$this->_openFile($file)) return false;
+
         $filelength = 0;
         $md5sum = md5_file($file);
 
@@ -405,7 +404,7 @@ class File_Bittorrent_MakeTorrent
             $current_dir = array_pop($stack);
             if ($dh = opendir($current_dir)) {
                 while ( ($file = readdir($dh)) !== false ) {
-                	if ($file{0} =='.') continue;
+                    if ($file{0} =='.') continue;
                     $current_file = $current_dir . '/' . $file;
                     if (is_file($current_file)) {
                         $file_list[] = $current_dir . '/' . $file;
@@ -427,10 +426,10 @@ class File_Bittorrent_MakeTorrent
      * @access private
      */
     function _filesize($file)
-	{
+    {
         $size = @filesize($file);
         if ($size == 0) {
-        	if (PHP_OS != 'Linux') return false; 
+            if (PHP_OS != 'Linux') return false;
             $size = exec('du -b ' . escapeshellarg($file));
         }
         return $size;
@@ -445,19 +444,19 @@ class File_Bittorrent_MakeTorrent
      * @access private
      */
     function _openFile($file)
-	{
+    {
         $fsize = $this->_filesize($file);
         if ($fsize <= 2*1024*1024*1024) {
-        	if (!$this->_fp = fopen($file, 'r')) {
-        		PEAR::raiseError(__CLASS__ . '::'. __FUNCTION__ . '() - Failed to open "' . $file . '"');
-				return false;
-        	}
+            if (!$this->_fp = fopen($file, 'r')) {
+                PEAR::raiseError(__CLASS__ . '::'. __FUNCTION__ . '() - Failed to open "' . $file . '"');
+                return false;
+            }
             $this->_fopen = true;
         } else {
-        	if (PHP_OS != 'Linux') {
-        		PEAR::raiseError(__CLASS__ . '::'. __FUNCTION__ . '() - File size is greater than 2GB. This is only supported under Linux.');
-				return false;
-        	}
+            if (PHP_OS != 'Linux') {
+                PEAR::raiseError(__CLASS__ . '::'. __FUNCTION__ . '() - File size is greater than 2GB. This is only supported under Linux.');
+                return false;
+            }
             $this->_fp = popen('cat ' . escapeshellarg($file), 'r');
             $this->_fopen = false;
         }
@@ -471,9 +470,9 @@ class File_Bittorrent_MakeTorrent
      */
     function _closeFile()
     {
-    	if ($this->_fopen) {
-			fclose($this->_fp);
-    	} else {
+        if ($this->_fopen) {
+            fclose($this->_fp);
+        } else {
             pclose($this->_fp);
         }
     }
