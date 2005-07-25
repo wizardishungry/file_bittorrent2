@@ -204,14 +204,17 @@ class File_Bittorrent_Decode
         if (isset($decoded['created by'])) {
             $this->created_by = $decoded['created by'];
         }
+        // Get the directory separator
+        $sep = (PHP_OS == 'Linux') ? '/' : '\\';
         // There is sometimes an array listing all files
         // in the torrent with their individual filesize
         if (isset($decoded['info']['files']) and is_array($decoded['info']['files'])) {
             foreach ($decoded['info']['files'] as $file) {
+                $path = join($sep, $file['path']);
                 // We are computing the total size of the download heres
                 $this->size += $file['length'];
                 $this->files[] = array(
-                    'filename' => $file['path'][0],
+                    'filename' => $path,
                     'size'     => $file['length'],
                 );
             }
