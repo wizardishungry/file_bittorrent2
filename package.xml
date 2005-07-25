@@ -2,8 +2,8 @@
 <package version="1.0">
     <name>File_Bittorrent</name>
     <summary>Decode and Encode data in Bittorrent format</summary>
-    <description>This package consists of thre classes which handles the encoding and decoding of data in Bittorrent format.
-    You can also extract useful informations from .torrent files and create .torrent files.</description>
+    <description>This package consists of three classes which handles the encoding and decoding of data in Bittorrent format.
+    You can also extract useful informations from .torrent files, create .torrent files and query the torrent's scrape page to get its statistics.</description>
     <license>PHP License</license>
     <maintainers>
         <maintainer>
@@ -19,8 +19,8 @@
     <release>
         <version>1.0.0RC2</version>
         <state>beta</state>
-        <date>tba</date>
-        <notes>Added querying of the tracker to decoder.</notes>
+        <date>2005-07-25</date>
+        <notes>Added querying of the tracker to decoder. Fixed a bug where only the first level of the path was displayed with File_Bittorrent::decodeFile().</notes>
         <filelist>
             <file role="php">File/Bittorrent/Encode.php</file>
             <file role="php">File/Bittorrent/Decode.php</file>
@@ -96,8 +96,8 @@
         <release>
             <version>1.0.0RC2</version>
             <state>beta</state>
-            <date>tba</date>
-            <notes>Added querying of the tracker to decoder.</notes>
+            <date>2005-07-25</date>
+            <notes>Added querying of the tracker to decoder. Fixed a bug where only the first level of the path was displayed with File_Bittorrent::decodeFile().</notes>
         </release>
     </changelog>
 </package>
