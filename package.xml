@@ -1,10 +1,40 @@
+<!--
+
+    // +----------------------------------------------------------------------+
+    // | Decode and Encode data in Bittorrent format                          |
+    // +----------------------------------------------------------------------+
+    // | Copyright (C) 2004-2005 Markus Tacker <m@tacker.org>                 |
+    // +----------------------------------------------------------------------+
+    // | This library is free software; you can redistribute it and/or        |
+    // | modify it under the terms of the GNU Lesser General Public           |
+    // | License as published by the Free Software Foundation; either         |
+    // | version 2.1 of the License, or (at your option) any later version.   |
+    // |                                                                      |
+    // | This library is distributed in the hope that it will be useful,      |
+    // | but WITHOUT ANY WARRANTY; without even the implied warranty of       |
+    // | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU    |
+    // | Lesser General Public License for more details.                      |
+    // |                                                                      |
+    // | You should have received a copy of the GNU Lesser General Public     |
+    // | License along with this library; if not, write to the                |
+    // | Free Software Foundation, Inc.                                       |
+    // | 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA               |
+    // +----------------------------------------------------------------------+
+
+    Pear Package XML Version 1
+    @version: $Id$
+    @autorh: Markus Tacker <m@tacker.org>
+    @package File_Bittorrent
+    @category File
+
+-->
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <package version="1.0">
     <name>File_Bittorrent</name>
     <summary>Decode and Encode data in Bittorrent format</summary>
     <description>This package consists of three classes which handles the encoding and decoding of data in Bittorrent format.
     You can also extract useful informations from .torrent files, create .torrent files and query the torrent's scrape page to get its statistics.</description>
-    <license>PHP License</license>
+    <license>LGPL</license>
     <maintainers>
         <maintainer>
             <user>tacker</user>
@@ -12,15 +42,21 @@
             <email>m@tacker.org</email>
             <role>lead</role>
         </maintainer>
+        <maintainer>
+            <user>nagash</user>
+            <name>Justin Jones</name>
+            <email>j.nagash@gmail.com</email>
+            <role>developer</role>
+        </maintainer>
     </maintainers>
     <deps>
         <dep type="pkg" rel="ge" version="1.1.0">PHP_Compat</dep>
     </deps>
     <release>
-        <version>1.0.0RC2</version>
+        <version>1.0.0RC3</version>
         <state>beta</state>
-        <date>2005-07-25</date>
-        <notes>Added querying of the tracker to decoder. Fixed a bug where only the first level of the path was displayed with File_Bittorrent::decodeFile().</notes>
+        <date>TBA</date>
+        <notes>Changed license from PHP to LGPL. A warm welcome to Justin as new developer.</notes>
         <filelist>
             <file role="php">File/Bittorrent/Encode.php</file>
             <file role="php">File/Bittorrent/Decode.php</file>
@@ -98,6 +134,12 @@
             <state>beta</state>
             <date>2005-07-25</date>
             <notes>Added querying of the tracker to decoder. Fixed a bug where only the first level of the path was displayed with File_Bittorrent::decodeFile().</notes>
+        </release>
+        <release>
+            <version>1.0.0RC3</version>
+            <state>beta</state>
+            <date>TBA</date>
+            <notes>Changed license from PHP to LGPL. A warm welcome to Justin (handle: nagash) as new developer.</notes>
         </release>
     </changelog>
 </package>
