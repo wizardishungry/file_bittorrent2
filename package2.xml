@@ -1,0 +1,235 @@
+<?xml version="1.0"?>
+<package packagerversion="1.4.0a12" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+http://pear.php.net/dtd/tasks-1.0.xsd
+http://pear.php.net/dtd/package-2.0
+http://pear.php.net/dtd/package-2.0.xsd">
+    <name>File_Bittorrent</name>
+    <channel>pear.php.net</channel>
+    <summary>Decode and Encode data in Bittorrent format</summary>
+    <description>
+        This package consists of three classes which handles the encoding and decoding of data in Bittorrent format.
+        You can also extract useful informations from .torrent files, create .torrent files and query the torrent&apos;s scrape page to get its statistics.
+    </description>
+    <lead>
+        <name>Markus Tacker</name>
+        <user>tacker</user>
+        <email>m@tacker.org</email>
+        <active>yes</active>
+    </lead>
+    <developer>
+        <name>Justin Jones</name>
+        <user>nagash</user>
+        <email>j.nagash@gmail.com</email>
+        <active>yes</active>
+    </developer>
+    <date>2005-08-28</date>
+    <time>10:33:06</time>
+    <version>
+        <release>1.0.0RC3</release>
+        <api>43</api>
+    </version>
+    <stability>
+        <release>beta</release>
+        <api>beta</api>
+    </stability>
+    <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+    <notes>
+        * Changed license from PHP to LGPL.
+        * Changed package.xml to version 2.
+        * A warm welcome to Justin (handle: nagash) as new developer.
+    </notes>
+    <contents>
+        <dir name="/">
+            <dir name="File">
+                <dir name="Bittorrent">
+                    <file name="Decode.php" role="php" />
+                    <file name="Encode.php" role="php" />
+                    <file name="MakeTorrent.php" role="php" />
+                </dir>
+            </dir>
+            <file name="example.php" role="doc" />
+            <file name="example_mktorrent.php" role="doc" />
+            <file name="install-x86-universal-2005.0.iso.torrent" role="doc" />
+            <file name="scrape.php" role="doc" />
+            <file name="torrentinfo.php" role="doc" />
+        </dir>
+    </contents>
+    <dependencies>
+        <required>
+            <php>
+                <min>4.0.0</min>
+            </php>
+            <pearinstaller>
+                <min>1.4.0a1</min>
+            </pearinstaller>
+            <package>
+                <name>PHP_Compat</name>
+                <channel>pear.php.net</channel>
+                <min>1.1.0</min>
+            </package>
+        </required>
+    </dependencies>
+    <phprelease />
+    <changelog>
+        <release>
+            <version>
+                <release>0.1</release>
+                <api>0.1</api>
+            </version>
+            <stability>
+                <release>alpha</release>
+                <api>alpha</api>
+            </stability>
+            <date>2004-06-25</date>
+            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
+            <notes>First release as proposal.</notes>
+        </release>
+        <release>
+            <version>
+                <release>0.1.1</release>
+                <api>0.1.1</api>
+            </version>
+            <stability>
+                <release>alpha</release>
+                <api>alpha</api>
+            </stability>
+            <date>2004-06-28</date>
+            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
+            <notes>Split encoding and decoding in two classes. Now you can encode vars and decode strings, not only .torrent files. </notes>
+        </release>
+        <release>
+            <version>
+                <release>0.1.2</release>
+                <api>0.1.2</api>
+            </version>
+            <stability>
+                <release>alpha</release>
+                <api>alpha</api>
+            </stability>
+            <date>2004-07-11</date>
+            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
+            <notes>Implemented changes suggestested during call for votes. </notes>
+        </release>
+        <release>
+            <version>
+                <release>0.1.3</release>
+                <api>0.1.3</api>
+            </version>
+            <stability>
+                <release>beta</release>
+                <api>beta</api>
+            </stability>
+            <date>2005-01-31</date>
+            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
+            <notes>Fixed Bug #3222. Set state to beta.</notes>
+        </release>
+        <release>
+            <version>
+                <release>0.1.4</release>
+                <api>0.1.4</api>
+            </version>
+            <stability>
+                <release>beta</release>
+                <api>beta</api>
+            </stability>
+            <date>2005-02-04</date>
+            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
+            <notes>Fixed an infinite loop when dictionaries where not closed properly.</notes>
+        </release>
+        <release>
+            <version>
+                <release>0.1.5</release>
+                <api>0.1.5</api>
+            </version>
+            <stability>
+                <release>beta</release>
+                <api>beta</api>
+            </stability>
+            <date>2005-02-07</date>
+            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
+            <notes>This release *really* fixes Bug #3222, which was not fixed properly in 0.1.3. </notes>
+        </release>
+        <release>
+            <version>
+                <release>0.1.6</release>
+                <api>0.1.6</api>
+            </version>
+            <stability>
+                <release>beta</release>
+                <api>beta</api>
+            </stability>
+            <date>2005-02-22</date>
+            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
+            <notes>Fix for Bug #3532. Removed integer parsing where not neccessary.</notes>
+        </release>
+        <release>
+            <version>
+                <release>0.1.7</release>
+                <api>0.1.7</api>
+            </version>
+            <stability>
+                <release>beta</release>
+                <api>beta</api>
+            </stability>
+            <date>2005-06-20</date>
+            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
+            <notes>Fixed Bug #3970 (Encoding integers as strings) and Bug #4570 (Arrays with null values breaks encoding).</notes>
+        </release>
+        <release>
+            <version>
+                <release>0.1.8</release>
+                <api>0.1.8</api>
+            </version>
+            <stability>
+                <release>beta</release>
+                <api>beta</api>
+            </stability>
+            <date>2005-06-21</date>
+            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
+            <notes>Fixed Bug #4570 (Array with empty array values were not decoded properly). </notes>
+        </release>
+        <release>
+            <version>
+                <release>1.0.0RC1</release>
+                <api>1.0.0RC1</api>
+            </version>
+            <stability>
+                <release>beta</release>
+                <api>beta</api>
+            </stability>
+            <date>2005-07-20</date>
+            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
+            <notes>Removed UTF-8 de- and encoding which fixes invalid info_hashes. Added File_Bittorrent_MakeTorrent which creates .torrent files. </notes>
+        </release>
+        <release>
+            <version>
+                <release>1.0.0RC2</release>
+                <api>1.0.0RC2</api>
+            </version>
+            <stability>
+                <release>beta</release>
+                <api>beta</api>
+            </stability>
+            <date>2005-07-25</date>
+            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
+            <notes>Added querying of the tracker to decoder. Fixed a bug where only the first level of the path was displayed with File_Bittorrent::decodeFile(). </notes>
+        </release>
+        <release>
+            <version>
+                <release>1.0.0RC3</release>
+                <api>43</api>
+            </version>
+            <stability>
+                <release>beta</release>
+                <api>beta</api>
+            </stability>
+            <date>2005-08-28</date>
+            <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+            <notes>
+                * Changed license from PHP to LGPL.
+                * Changed package.xml to version 2.
+                * A warm welcome to Justin (handle: nagash) as new developer.
+            </notes>
+        </release>
+    </changelog>
+</package>
