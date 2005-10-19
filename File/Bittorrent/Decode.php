@@ -144,6 +144,11 @@ class File_Bittorrent_Decode
     var $info_hash;
 
     /**
+    * @var mixed    The last error object or null if no error has occurred.
+    */
+    var $last_error;
+
+    /**
     * Decode a Bencoded string
     *
     * @param string
@@ -167,7 +172,7 @@ class File_Bittorrent_Decode
     {
         // Check file
         if (!is_file($file)) {
-            PEAR::raiseError('File_Bittorrent_Decode::decode() - Not a file.', null, null, "Given filename '$file' is not a valid file.");
+            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::decode() - Not a file.', null, null, "Given filename '$file' is not a valid file.");
             return false;
         }
 
@@ -189,7 +194,7 @@ class File_Bittorrent_Decode
         $this->_source_length = strlen($this->_source);
         $decoded = $this->_bdecode();
         if (!is_array($decoded)) {
-            PEAR::raiseError('File_Bittorrent_Decode::decode() - Corrupted bencoded data.', null, null, "Failed to decode data from file '$file'.");
+            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::decode() - Corrupted bencoded data.', null, null, "Failed to decode data from file '$file'.");
             return false;
         }
 
@@ -408,7 +413,7 @@ class File_Bittorrent_Decode
     {
         // Check if we can access remote data
         if (!ini_get('allow_url_fopen')) {
-            PEAR::raiseError('File_Bittorrent_Decode::getStats() - "allow_url_fopen" must be enabled.');
+            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::getStats() - "allow_url_fopen" must be enabled.');
             return false;
         }
         // Query the scrape page
@@ -417,7 +422,7 @@ class File_Bittorrent_Decode
         $scrape_data = file_get_contents($scrape_url);
         $stats = $this->decode($scrape_data);
         if (!isset($stats['files'][$packed_hash])) {
-            PEAR::raiseError('File_Bittorrent_Decode::getStats() - Invalid scrape data: "' . $scrape_data . '"');
+            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::getStats() - Invalid scrape data: "' . $scrape_data . '"');
             return false;
         }
         return $stats['files'][$packed_hash];
