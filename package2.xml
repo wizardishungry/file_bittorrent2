@@ -22,21 +22,26 @@ http://pear.php.net/dtd/package-2.0.xsd">
         <email>j.nagash@gmail.com</email>
         <active>yes</active>
     </developer>
-    <date>2005-08-28</date>
-    <time>10:33:06</time>
+    <date>2005-10-19</date>
+    <time>19:06:54</time>
     <version>
-        <release>1.0.0RC3</release>
-        <api>43</api>
+        <release>1.0.0</release>
+        <api>49</api>
     </version>
     <stability>
-        <release>beta</release>
-        <api>beta</api>
+        <release>stable</release>
+        <api>stable</api>
     </stability>
     <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
     <notes>
+        * First stable release
         * Changed license from PHP to LGPL.
         * Changed package.xml to version 2.
         * A warm welcome to Justin (handle: nagash) as new developer.
+        * Enhances File_Bittorrent_Decode::decodeFile() filename handling.
+        * Check for allow_url_fopen.
+        * Raise an error in File_Bittorrent_MakeTorrent if no file is given.
+        * Save last PEAR_Error object in public property.
     </notes>
     <contents>
         <dir name="/">
@@ -215,20 +220,25 @@ http://pear.php.net/dtd/package-2.0.xsd">
             <notes>Added querying of the tracker to decoder. Fixed a bug where only the first level of the path was displayed with File_Bittorrent::decodeFile(). </notes>
         </release>
         <release>
+            <date>2005-10-19</date>
             <version>
-                <release>1.0.0RC3</release>
-                <api>43</api>
+                <release>1.0.0</release>
+                <api>49</api>
             </version>
             <stability>
-                <release>beta</release>
-                <api>beta</api>
+                <release>stable</release>
+                <api>stable</api>
             </stability>
-            <date>2005-08-28</date>
             <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
             <notes>
+                * First stable release
                 * Changed license from PHP to LGPL.
                 * Changed package.xml to version 2.
                 * A warm welcome to Justin (handle: nagash) as new developer.
+                * Enhances File_Bittorrent_Decode::decodeFile() filename handling.
+                * Check for allow_url_fopen.
+                * Raise an error in File_Bittorrent_MakeTorrent if no file is given.
+                * Save last PEAR_Error object in public property.
             </notes>
         </release>
     </changelog>
