@@ -406,6 +406,12 @@ class File_Bittorrent_Decode
     */
     function getStats()
     {
+        // Check if we can access remote data
+        if (!ini_get('allow_url_fopen')) {
+            PEAR::raiseError('File_Bittorrent_Decode::getStats() - "allow_url_fopen" must be enabled.');
+            return false;
+        }
+        // Query the scrape page
         $packed_hash = pack('H*', $this->info_hash);
         $scrape_url = preg_replace('/\/announce$/', '/scrape', $this->announce) . '?info_hash=' . urlencode($packed_hash);
         $scrape_data = file_get_contents($scrape_url);
