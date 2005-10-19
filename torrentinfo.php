@@ -36,6 +36,9 @@
     require_once 'File/Bittorrent/Decode.php';
     require_once 'Console/Getargs.php';
 
+    // Set error handling
+    PEAR::setErrorHandling(PEAR_ERROR_PRINT);
+
     // Get filename from command line
     $args_config = array(
         'torrent' => array(
@@ -63,9 +66,13 @@
         echo str_pad($key . ': ', 20, ' ', STR_PAD_LEFT);
         switch($key) {
         case 'files':
-            echo "\n";
+            $n = 1;
+            $files_n = count($val);
+            $n_length = strlen($files_n);
+            echo '(' . $files_n . ")\n";
             foreach ($val as $file) {
-                echo str_repeat(' ', 20) . '- ' . $file['filename'] . "\n";
+                echo str_repeat(' ', 20) . '' . str_pad($n, $n_length, ' ', PAD_LEFT) . ': ' . $file['filename'] . "\n";
+                $n++;
             }
             break;
         case 'announce_list':

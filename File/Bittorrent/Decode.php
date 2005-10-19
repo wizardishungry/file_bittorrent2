@@ -188,6 +188,10 @@ class File_Bittorrent_Decode
         $this->_source = file_get_contents($file);
         $this->_source_length = strlen($this->_source);
         $decoded = $this->_bdecode();
+        if (!is_array($decoded)) {
+            PEAR::raiseError('File_Bittorrent_Decode::decode() - Corrupted bencoded data.', null, null, "Failed to decode data from file '$file'.");
+            return false;
+        }
 
         // Compute info_hash
         $Encoder = new File_Bittorrent_Encode;
@@ -223,6 +227,12 @@ class File_Bittorrent_Decode
                     'size'     => $file['length'],
                 );
             }
+        // In case the torrent contains only on file
+        } elseif(isset($decoded['info']['name']))  {
+                $this->files[] = array(
+                   'filename' => $decoded['info']['name'],
+                   'size'     => $decoded['info']['length'],
+                );
         }
         // If the the info->length field is present we are dealing with
         // a single file torrent.
