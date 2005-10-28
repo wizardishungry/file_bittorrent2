@@ -149,6 +149,11 @@ class File_Bittorrent_Decode
     var $last_error;
 
     /**
+    * @var array    Decoded data from File_Bittorrent_Decode::decodeFile()
+    */
+    var $decoded = array();
+
+    /**
     * Decode a Bencoded string
     *
     * @param string
@@ -192,38 +197,38 @@ class File_Bittorrent_Decode
         // Decode .torrent
         $this->_source = file_get_contents($file);
         $this->_source_length = strlen($this->_source);
-        $decoded = $this->_bdecode();
-        if (!is_array($decoded)) {
+        $this->decoded = $this->_bdecode();
+        if (!is_array($this->decoded)) {
             $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::decode() - Corrupted bencoded data.', null, null, "Failed to decode data from file '$file'.");
             return false;
         }
 
         // Compute info_hash
         $Encoder = new File_Bittorrent_Encode;
-        $this->info_hash = sha1($Encoder->encode($decoded['info']));
+        $this->info_hash = sha1($Encoder->encode($this->decoded['info']));
 
         // Pull information form decoded data
         $this->filename = basename($file);
         // Name of the torrent - statet by the torrent's author
-        $this->name     = $decoded['info']['name'];
+        $this->name     = $this->decoded['info']['name'];
         // Authors may add comments to a torrent
-        if (isset($decoded['comment'])) {
-            $this->comment = $decoded['comment'];
+        if (isset($this->decoded['comment'])) {
+            $this->comment = $this->decoded['comment'];
         }
         // Creation date of the torrent as unix timestamp
-        if (isset($decoded['creation date'])) {
-            $this->date = $decoded['creation date'];
+        if (isset($this->decoded['creation date'])) {
+            $this->date = $this->decoded['creation date'];
         }
         // This contains the signature of the application used to create the torrent
-        if (isset($decoded['created by'])) {
-            $this->created_by = $decoded['created by'];
+        if (isset($this->decoded['created by'])) {
+            $this->created_by = $this->decoded['created by'];
         }
         // Get the directory separator
         $sep = (PHP_OS == 'Linux') ? '/' : '\\';
         // There is sometimes an array listing all files
         // in the torrent with their individual filesize
-        if (isset($decoded['info']['files']) and is_array($decoded['info']['files'])) {
-            foreach ($decoded['info']['files'] as $file) {
+        if (isset($this->decoded['info']['files']) and is_array($this->decoded['info']['files'])) {
+            foreach ($this->decoded['info']['files'] as $file) {
                 $path = join($sep, $file['path']);
                 // We are computing the total size of the download heres
                 $this->size += $file['length'];
@@ -233,26 +238,26 @@ class File_Bittorrent_Decode
                 );
             }
         // In case the torrent contains only on file
-        } elseif(isset($decoded['info']['name']))  {
+        } elseif(isset($this->decoded['info']['name']))  {
                 $this->files[] = array(
-                   'filename' => $decoded['info']['name'],
-                   'size'     => $decoded['info']['length'],
+                   'filename' => $this->decoded['info']['name'],
+                   'size'     => $this->decoded['info']['length'],
                 );
         }
         // If the the info->length field is present we are dealing with
         // a single file torrent.
-        if (isset($decoded['info']['length']) and $this->size == 0) {
-            $this->size = $decoded['info']['length'];
+        if (isset($this->decoded['info']['length']) and $this->size == 0) {
+            $this->size = $this->decoded['info']['length'];
         }
 
         // This contains the tracker the torrent has been received from
-        if (isset($decoded['announce'])) {
-            $this->announce = $decoded['announce'];
+        if (isset($this->decoded['announce'])) {
+            $this->announce = $this->decoded['announce'];
         }
 
         // This contains a list of all known trackers for this torrent
-        if (isset($decoded['announce-list']) and is_array($decoded['announce-list'])) {
-            foreach($decoded['announce-list'] as $item) {
+        if (isset($this->decoded['announce-list']) and is_array($this->decoded['announce-list'])) {
+            foreach($this->decoded['announce-list'] as $item) {
                 if (!isset($item[0])) continue;
                 $this->announce_list[] = $item[0];
             }
