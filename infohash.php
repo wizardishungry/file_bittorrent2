@@ -62,10 +62,10 @@
     $File_Bittorrent_Decode->decodeFile($torrent);
 
     echo "\nInfo Hash\n";
-    echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
-    echo "This:           " . $File_Bittorrent_Decode->info_hash . "\n";
-
-    exec('/usr/bin/btshowmetainfo.py ' . escapeshellarg($torrent), $bt);
-    echo "btshowmetainfo: " . substr($bt[3], strpos($bt[3], ':') + 2) . "\n";
+    echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
+    echo "This:                " . $File_Bittorrent_Decode->info_hash . "\n";
+    
+    exec('torrentinfo-console ' . escapeshellarg($torrent), $bt);
+    echo "torrentinfo-console: " . substr($bt[3], strpos($bt[3], ':') + 2) . "\n";
 
 ?>
