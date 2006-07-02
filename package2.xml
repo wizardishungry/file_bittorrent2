@@ -62,10 +62,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <dependencies>
         <required>
             <php>
-                <min>4.0.0</min>
+                <min>4.4.0</min>
             </php>
             <pearinstaller>
-                <min>1.4.0a1</min>
+                <min>1.4.2</min>
             </pearinstaller>
             <package>
                 <name>PHP_Compat</name>
