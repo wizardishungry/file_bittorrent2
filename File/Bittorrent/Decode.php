@@ -257,10 +257,7 @@ class File_Bittorrent_Decode
 
         // This contains a list of all known trackers for this torrent
         if (isset($this->decoded['announce-list']) and is_array($this->decoded['announce-list'])) {
-            foreach($this->decoded['announce-list'] as $item) {
-                if (!isset($item[0])) continue;
-                $this->announce_list[] = $item[0];
-            }
+            $this->announce_list = $this->decoded['announce-list'];
         }
 
         // Currently, I'm not sure how to determine an error

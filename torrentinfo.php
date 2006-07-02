@@ -77,13 +77,15 @@
             break;
         case 'announce_list':
             echo "\n";
-            foreach ($val as $url) {
-                echo str_repeat(' ', 20) . '- ' . $url . "\n";
+            foreach ($val as $list) {
+                echo str_repeat(' ', 20) . '- ' . join(', ', $list) . "\n";
             }
             break;
         default:
             echo $val . "\n";
         }
     }
+
+    echo "\n";
 
 ?>
