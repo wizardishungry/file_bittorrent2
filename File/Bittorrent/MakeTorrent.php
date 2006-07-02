@@ -398,6 +398,7 @@ class File_Bittorrent_MakeTorrent
                 $this->_files[] = $filedata;
             }
         }
+        return true;
     }
 
     /**
