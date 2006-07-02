@@ -34,14 +34,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
     </stability>
     <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
     <notes>
-        * First stable release
-        * Changed license from PHP to LGPL.
-        * Changed package.xml to version 2.
-        * A warm welcome to Justin (handle: nagash) as new developer.
-        * Enhances File_Bittorrent_Decode::decodeFile() filename handling.
-        * Check for allow_url_fopen.
-        * Raise an error in File_Bittorrent_MakeTorrent if no file is given.
-        * Save last PEAR_Error object in public property.
+        * Updated dependencies to PEAR 1.4.2 / PHP 4.4.
+        * Fixed _addDir return value. Bug #7406.
+        * Changed announce_list behaviour. Bug #8085.
     </notes>
     <contents>
         <dir name="/">
