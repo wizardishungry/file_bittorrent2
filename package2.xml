@@ -241,5 +241,22 @@ http://pear.php.net/dtd/package-2.0.xsd">
                 * Save last PEAR_Error object in public property.
             </notes>
         </release>
+        <release>
+            <date>2006-07-02</date>
+            <version>
+                <release>1.0.1</release>
+                <api>57</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+            <notes>
+                * Updated dependencies to PEAR 1.4.2 / PHP 4.4.
+                * Fixed _addDir return value. Bug #7406.
+                * Changed announce_list behaviour. Bug #8085.
+            </notes>
+        </release>
     </changelog>
 </package>
