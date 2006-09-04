@@ -77,18 +77,15 @@ class File_Bittorrent_Encode
         switch (gettype($mixed)) {
         case is_null($mixed):
             return $this->encode_string('');
-            break;
         case 'string':
             return $this->encode_string($mixed);
-            break;
         case 'integer':
-            return  $this->encode_int($mixed);
-            break;
+        case 'double':
+            return  $this->encode_int(round($mixed));
         case 'array':
             return $this->encode_array($mixed);
-            break;
         default:
-            PEAR::raiseError('File_Bittorrent_Encode()::encode() - Unsupported type.', null, null, "Variable must be one of 'string', 'integer' or 'array'");
+            PEAR::raiseError('File_Bittorrent_Encode::encode() - Unsupported type.', null, null, "Variable must be one of 'string', 'integer', 'double' or 'array'");
         }
     }
 
@@ -104,7 +101,7 @@ class File_Bittorrent_Encode
     */
     function encode_string($str)
     {
-        return sprintf('%s:%s', strlen($str), $str);
+        return strlen($str) . ':' . $str;
     }
 
     /**
@@ -119,7 +116,7 @@ class File_Bittorrent_Encode
     */
     function encode_int($int)
     {
-        return sprintf('i%se', $int);
+        return 'i' . $int . 'e';
     }
 
     /**

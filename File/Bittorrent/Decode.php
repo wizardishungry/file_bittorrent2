@@ -364,7 +364,10 @@ class File_Bittorrent_Decode
     function _decode_int()
     {
         $pos_e  = strpos($this->_source, 'e', $this->_position);
-        $return = intval(substr($this->_source, $this->_position, $pos_e - $this->_position));
+        // The return value showld be automatically casted to float if the intval would
+        // overflow. The "+ 0" accomplishes exactly that, using the internal casting
+        // logic of PHP
+        $return = substr($this->_source, $this->_position, $pos_e - $this->_position) + 0;
         $this->_position = $pos_e + 1;
         return $return;
     }
