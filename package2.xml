@@ -20,22 +20,23 @@ http://pear.php.net/dtd/package-2.0.xsd">
         <name>Justin Jones</name>
         <user>nagash</user>
         <email>j.nagash@gmail.com</email>
-        <active>yes</active>
+        <active>no</active>
     </developer>
-    <date>2006-09-04</date>
+    <date>2006-10-23</date>
     <time>00:00:00</time>
     <version>
-        <release>1.0.2</release>
-        <api>62</api>
+        <release>1.1.0RC1</release>
+        <api>63</api>
     </version>
     <stability>
-        <release>stable</release>
+        <release>beta</release>
         <api>stable</api>
     </stability>
     <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
     <notes>
-        * Alexiev fixed bug #5836
-        * Added test for info hash
+        * Added enhancements to invalid data from Bug #9093. Thanks to Robin H. Johnson.
+        * Added AllTests.php
+        * Added tests to release
     </notes>
     <contents>
         <dir name="/">
@@ -51,6 +52,12 @@ http://pear.php.net/dtd/package-2.0.xsd">
             <file name="install-x86-universal-2005.0.iso.torrent" role="doc" />
             <file name="scrape.php" role="doc" />
             <file name="torrentinfo.php" role="doc" />
+            <dir name="Tests">
+                <file name="AllTests.php" role="test" />
+                <file name="Bug7406.php" role="test" />
+                <file name="Bug8085.php" role="test" />
+                <file name="FileBittorrent.php" role="test" />
+            </dir>
         </dir>
     </contents>
     <dependencies>
@@ -266,6 +273,24 @@ http://pear.php.net/dtd/package-2.0.xsd">
             <notes>
                 * Alexiev fixed bug #5836
                 * Added test for info hash
+            </notes>
+        </release>
+        <release>
+            <date>2006-10-23</date>
+            <time>00:00:00</time>
+            <version>
+                <release>1.1.0RC1</release>
+                <api>63</api>
+            </version>
+            <stability>
+                <release>beta</release>
+                <api>stable</api>
+            </stability>
+            <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+            <notes>
+                * Added enhancements to invalid data from Bug #9093. Thanks to Robin H. Johnson.
+                * Added AllTests.php
+                * Added tests to release
             </notes>
         </release>
     </changelog>
