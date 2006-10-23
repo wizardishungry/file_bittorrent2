@@ -3,7 +3,7 @@
 // +----------------------------------------------------------------------+
 // | Decode and Encode data in Bittorrent format                          |
 // +----------------------------------------------------------------------+
-// | Copyright (C) 2004-2005 Markus Tacker <m@tacker.org>                 |
+// | Copyright (C) 2004-2006 Markus Tacker <m@tacker.org>                 |
 // +----------------------------------------------------------------------+
 // | This library is free software; you can redistribute it and/or        |
 // | modify it under the terms of the GNU Lesser General Public           |
@@ -39,6 +39,7 @@
 * @package File_Bittorrent
 * @category File
 * @author Markus Tacker <m@tacker.org>
+* @author Robin H. Johnson <robbat2@gentoo.org>
 * @version $Id$
 */
 
@@ -72,6 +73,7 @@ PHP_Compat::loadFunction('file_get_contents');
 * @package File_Bittorrent
 * @category File
 * @author Markus Tacker <m@tacker.org>
+* @author Robin H. Johnson <robbat2@gentoo.org>
 */
 class File_Bittorrent_Decode
 {
@@ -164,7 +166,12 @@ class File_Bittorrent_Decode
         $this->_source = $str;
         $this->_position  = 0;
         $this->_source_length = strlen($this->_source);
-        return $this->_bdecode();
+        $result = $this->_bdecode();
+        if ($this->_position < $this->_source_length) {
+            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::decode() - Trailing garbage in file.');
+            return false;
+        }
+        return $result;
     }
 
     /**
@@ -238,7 +245,7 @@ class File_Bittorrent_Decode
                 );
             }
         // In case the torrent contains only on file
-        } elseif(isset($this->decoded['info']['name']))  {
+        } elseif (isset($this->decoded['info']['name']))  {
                 $this->files[] = array(
                    'filename' => $this->decoded['info']['name'],
                    'size'     => $this->decoded['info']['length'],
@@ -315,11 +322,42 @@ class File_Bittorrent_Decode
     */
     function _decode_dict()
     {
+        $return = array();
+        $ended = false;
+        $lastkey = NULL;
         while ($char = $this->_getChar()) {
-            if ($char == 'e') break;
+            if ($char == 'e') {
+                $ended = true;
+                break;
+            }
+            if (!ctype_digit($char)) {
+                $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_dict() - Invalid dictionary key.');
+                $return = false;
+                break;
+            }
             $key = $this->_decode_string();
+            if (isset($return[$key])) {
+                $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_dict() - Duplicate dictionary key.');
+                $return = false;
+                break;
+            }
+            if ($key < $lastkey) {
+                $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_dict() - Missorted dictionary key.');
+                $return = false;
+                break;
+            }
             $val = $this->_bdecode();
+            if ($val === false) {
+                $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_dict() - Invalid value.');
+                $return = false;
+                break;
+            }
             $return[$key] = $val;
+            $lastkey = $key;
+        }
+        if (!$ended) {
+            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_dict() - Unterminated dictionary.');
+            $return = false;
         }
         $this->_position++;
         return $return;
@@ -337,15 +375,30 @@ class File_Bittorrent_Decode
     */
     function _decode_string()
     {
+        // Check for bad leading zero
+        if (substr($this->_source, $this->_position, 1) == '0' and
+        substr($this->_source, $this->_position + 1, 1) != ':') {
+            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_string() - Leading zero in string length.');
+            return false;
+        }
         // Find position of colon
         // Supress error message if colon is not found which may be caused by a corrupted or wrong encoded string
-        if(!$pos_colon = @strpos($this->_source, ':', $this->_position)) {
+        if (!$pos_colon = @strpos($this->_source, ':', $this->_position)) {
+            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_string() - Colon not found.');
             return false;
         }
         // Get length of string
         $str_length = intval(substr($this->_source, $this->_position, $pos_colon));
+        if ($str_length + $pos_colon + 1 > $this->_source_length) {
+            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_string() - Input too short for string length.');
+            return false;
+        }
         // Get string
-        $return = substr($this->_source, $pos_colon + 1, $str_length);
+        if ($str_length === 0) {
+            $return = '';
+        } else {
+            $return = substr($this->_source, $pos_colon + 1, $str_length);
+        }
         // Move Pointer after string
         $this->_position = $pos_colon + $str_length + 1;
         return $return;
@@ -364,6 +417,23 @@ class File_Bittorrent_Decode
     function _decode_int()
     {
         $pos_e  = strpos($this->_source, 'e', $this->_position);
+        $p = $this->_position;
+        if ($p === $pos_e) {
+            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_int() - Empty integer.');
+            return false;
+        }
+        if (substr($this->_source, $this->_position, 1) == '-') $p++;
+        if (substr($this->_source, $p, 1) == '0' and
+        ($p != $this->_position or $pos_e > $p+1)) {
+            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_int() - Leading zero in integer.');
+            return false;
+        }
+        for ($i = $p; $i < $pos_e-1; $i++) {
+            if (!ctype_digit(substr($this->_source, $i, 1))) {
+                $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_int() - Non-digit characters in integer.');
+                return false;
+            }
+        }
         // The return value showld be automatically casted to float if the intval would
         // overflow. The "+ 0" accomplishes exactly that, using the internal casting
         // logic of PHP
@@ -388,8 +458,20 @@ class File_Bittorrent_Decode
     {
         $return = array();
         $char = $this->_getChar();
-        while ($this->_source{$this->_position} != 'e') {
+        $p1 = $p2 = 0;
+        if ($char === false) {
+            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_list() - Unterminated list.');
+            return false;
+        }
+        while ($char !== false && substr($this->_source, $this->_position, 1) != 'e') {
+            $p1 = $this->_position;
             $val = $this->_bdecode();
+            $p2 = $this->_position;
+            // Empty does not work here
+            if($p1 == $p2)  {
+                $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_list() - Unterminated list.');
+                return false;
+            }
             $return[] = $val;
         }
         $this->_position++;
@@ -406,7 +488,7 @@ class File_Bittorrent_Decode
     {
         if (empty($this->_source)) return false;
         if ($this->_position >= $this->_source_length) return false;
-        return $this->_source{$this->_position};
+        return substr($this->_source, $this->_position, 1);
     }
 
     /**

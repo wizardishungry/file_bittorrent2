@@ -3,7 +3,7 @@
 // +----------------------------------------------------------------------+
 // | Decode and Encode data in Bittorrent format                          |
 // +----------------------------------------------------------------------+
-// | Copyright (C) 2004-2005 Markus Tacker <m@tacker.org>                 |
+// | Copyright (C) 2004-2006 Markus Tacker <m@tacker.org>                 |
 // +----------------------------------------------------------------------+
 // | This library is free software; you can redistribute it and/or        |
 // | modify it under the terms of the GNU Lesser General Public           |
@@ -28,6 +28,7 @@
     * @subpackage Test
     * @category File
     * @author Markus Tacker <m@tacker.org>
+    * @author Robin H. Johnson <robbat2@gentoo.org>
     * @version $Id$
     */
 
@@ -41,6 +42,7 @@
     * @subpackage Test
     * @category File
     * @author Markus Tacker <m@tacker.org>
+    * @author Robin H. Johnson <robbat2@gentoo.org>
     * @version $Id$
     */
     class Tests_FileBittorrent extends PHPUnit2_Framework_TestCase
@@ -53,6 +55,66 @@
             $File_Bittorrent_Decode->decodeFile(self::$torrent);
             exec('torrentinfo-console ' . escapeshellarg(self::$torrent), $bt);
             $this->assertEquals($File_Bittorrent_Decode->info_hash, substr($bt[3], strpos($bt[3], ':') + 2));
+        }
+
+        public function testDecode()
+        {
+            $test_data = array(
+                '0:0:'                     => false, // data past end of first correct bencoded string
+                'ie'                       => false, // empty integer
+                'i341foo382e'              => false, // malformed integer
+                'i4e'                      => 4,
+                'i0e'                      => 0,
+                'i123456789e'              => 123456789,
+                'i-10e'                    => -10,
+                'i-0e'                     => false, // negative zero integer
+                'i123'                     => false, // unterminated integer
+                ''                         => false, // empty string
+                'i6easd'                   => false, // integer with trailing garbage
+                '35208734823ljdahflajhdf'  => false, // garbage looking vaguely like a string, with large count
+                '2:abfdjslhfld'            => false, // string with trailing garbage
+                '0:'                       => '',
+                '3:abc'                    => 'abc',
+                '10:1234567890'            => '1234567890',
+                '02:xy'                    => false, // string with extra leading zero in count
+                'l'                        => false, // unclosed empty list
+                'le'                       => array(),
+                'leanfdldjfh'              => false, // empty list with trailing garbage
+                'l0:0:0:e'                 => array('', '', ''),
+                'relwjhrlewjh'             => false, // complete garbage
+                'li1ei2ei3ee'              => array( 1, 2, 3 ),
+                'l3:asd2:xye'              => array( 'asd', 'xy' ),
+                'll5:Alice3:Bobeli2ei3eee' => array ( array( 'Alice', 'Bob' ), array( 2, 3 ) ),
+                'd'                        => false, // unclosed empty dict
+                'defoobar'                 => false, // empty dict with trailing garbage
+                'de'                       => array(),
+                'd1:a0:e'                  => array('a'=>''),
+                'd3:agei25e4:eyes4:bluee'  => array('age' => 25, 'eyes' => 'blue' ),
+                'd8:spam.mp3d6:author5:Alice6:lengthi100000eee' => array('spam.mp3' => array( 'author' => 'Alice', 'length' => 100000 )),
+                'd3:fooe'                  => false, // dict with odd number of elements
+                'di1e0:e'                  => false, // dict with integer key
+                'd1:b0:1:a0:e'             => false, // missorted keys
+                'd1:a0:1:a0:e'             => false, // duplicate keys
+                'i03e'                     => false, // integer with leading zero
+                'l01:ae'                   => false, // list with string with leading zero in count
+                '9999:x'                   => false, // string shorter than count
+                'l0:'                      => false, // unclosed list with content
+                'd0:0:'                    => false, // unclosed dict with content
+                'd0:'                      => false, // unclosed dict with odd number of elements
+                '00:'                      => false, // zero-length string with extra leading zero in count
+                'l-3:e'                    => false, // list with negative-length string
+                'i-03e'                    => false, // negative integer with leading zero
+                'di0e0:e'                  => false, // dictionary with integer key
+                'd8:announceldi0e0:eee'    => false, // nested dictionary with integer key
+                'd8:announcedi0e0:e18:azureus_propertiesi0ee' => false, // nested dictionary with integer key #2
+            );
+            // Thanks to IsoHunt.com for the last 3 testcases of bad data seen in their system.
+
+            $File_Bittorrent_Decode = new File_Bittorrent_Decode;
+            ini_set('mbstring.internal_encoding','ASCII');
+            foreach($test_data as $ti => $to) {
+                $this->assertEquals($to, $File_Bittorrent_Decode->decode($ti));
+            }
         }
     }
 
