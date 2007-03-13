@@ -35,6 +35,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
     <notes>
         * Stable release
+        * Switched Tests to PHPUnit3
     </notes>
     <contents>
         <dir name="/">
@@ -305,6 +306,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
             <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
             <notes>
                 * Stable release
+                * Switched Tests to PHPUnit3
             </notes>
         </release>
     </changelog>
