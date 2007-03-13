@@ -32,7 +32,7 @@
     * @version $Id$
     */
 
-    require_once 'PHPUnit2/Framework/TestCase.php';
+    require_once 'PHPUnit/Framework/TestCase.php';
     require_once 'File/Bittorrent/MakeTorrent.php';
     require_once 'File/Bittorrent/Decode.php';
 
@@ -46,7 +46,7 @@
     * @author Markus Tacker <m@tacker.org>
     * @version $Id$
     */
-    class Tests_Bug7406 extends PHPUnit2_Framework_TestCase
+    class Tests_Bug7406 extends PHPUnit_Framework_TestCase
     {
         public static $torrent = './bugs/bug-7406/TestDir';
 

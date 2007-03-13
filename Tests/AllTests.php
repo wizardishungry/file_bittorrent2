@@ -50,7 +50,7 @@
     class Tests_AllTests {
 
         public static function suite() {
-            $suite = new PHPUnit2_Framework_TestSuite();
+            $suite = new PHPUnit_Framework_TestSuite();
 
             $suite->addTestSuite('Tests_FileBittorrent');
             $suite->addTestSuite('Tests_Bug7406');

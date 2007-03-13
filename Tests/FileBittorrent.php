@@ -32,7 +32,7 @@
     * @version $Id$
     */
 
-    require_once 'PHPUnit2/Framework/TestCase.php';
+    require_once 'PHPUnit/Framework/TestCase.php';
     require_once 'File/Bittorrent/Decode.php';
 
     /**
@@ -45,7 +45,7 @@
     * @author Robin H. Johnson <robbat2@gentoo.org>
     * @version $Id$
     */
-    class Tests_FileBittorrent extends PHPUnit2_Framework_TestCase
+    class Tests_FileBittorrent extends PHPUnit_Framework_TestCase
     {
         public static $torrent = './install-x86-universal-2005.0.iso.torrent';
 
