@@ -22,21 +22,19 @@ http://pear.php.net/dtd/package-2.0.xsd">
         <email>j.nagash@gmail.com</email>
         <active>no</active>
     </developer>
-    <date>2006-10-23</date>
+    <date>2007-03-13</date>
     <time>00:00:00</time>
     <version>
-        <release>1.1.0RC1</release>
+        <release>1.1.0</release>
         <api>63</api>
     </version>
     <stability>
-        <release>beta</release>
+        <release>stable</release>
         <api>stable</api>
     </stability>
     <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
     <notes>
-        * Added enhancements to invalid data from Bug #9093. Thanks to Robin H. Johnson.
-        * Added AllTests.php
-        * Added tests to release
+        * Stable release
     </notes>
     <contents>
         <dir name="/">
@@ -291,6 +289,22 @@ http://pear.php.net/dtd/package-2.0.xsd">
                 * Added enhancements to invalid data from Bug #9093. Thanks to Robin H. Johnson.
                 * Added AllTests.php
                 * Added tests to release
+            </notes>
+        </release>
+        <release>
+            <date>2007-03-13</date>
+            <time>00:00:00</time>
+            <version>
+                <release>1.1.0</release>
+                <api>63</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+            <notes>
+                * Stable release
             </notes>
         </release>
     </changelog>
