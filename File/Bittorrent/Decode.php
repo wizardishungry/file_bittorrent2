@@ -47,13 +47,8 @@
 * Include required classes
 */
 require_once 'PEAR.php';
-require_once 'PHP/Compat.php';
 require_once 'File/Bittorrent/Encode.php';
-
-/**
-* Load replacement functions
-*/
-PHP_Compat::loadFunction('file_get_contents');
+require_once 'File/Bittorrent/Exception.php';
 
 /**
 * Encode data in Bittorrent format
@@ -80,96 +75,88 @@ class File_Bittorrent_Decode
     /**
     * @var string   Name of the torrent
     */
-    var $name = '';
+    protected $name = '';
 
     /**
     * @var string   Filename of the torrent
     */
-    var $filename = '';
+    protected $filename = '';
 
     /**
     * @var string   Comment
     */
-    var $comment = '';
+    protected $comment = '';
 
     /**
     * @var int   Creation date as unix timestamp
     */
-    var $date = 0;
+    protected $date = 0;
 
     /**
     * @var array    Files in the torrent
     */
-    var $files = array();
+    protected $files = array();
 
     /**
     * @var int      Size of of the full torrent (after download)
     */
-    var $size = 0;
+    protected $size = 0;
 
     /**
     * @var string   Signature of the software which created the torrent
     */
-    var $created_by = '';
+    protected $created_by = '';
 
     /**
     * @var string    tracker (the tracker the torrent has been received from)
     */
-    var $announce = '';
+    protected $announce = '';
 
     /**
     * @var array     List of known trackers for the torrent
     */
-    var $announce_list = array();
+    protected $announce_list = array();
 
     /**
     * @var string   Source string
-    * @access private
     */
-    var $_source = '';
+    protected $source = '';
 
     /**
     * @var int      Source length
-    * @access private
     */
-    var $_source_length = 0;
+    protected $source_length = 0;
 
     /**
     * @var int      Current position of the string
-    * @access private
     */
-    var $_position = 0;
+    protected $position = 0;
 
     /**
     * @var string   Info hash
     */
-    var $info_hash;
-
-    /**
-    * @var mixed    The last error object or null if no error has occurred.
-    */
-    var $last_error;
+    protected $info_hash;
 
     /**
     * @var array    Decoded data from File_Bittorrent_Decode::decodeFile()
     */
-    var $decoded = array();
+    protected $decoded = array();
 
     /**
     * Decode a Bencoded string
     *
     * @param string
     * @return mixed
+    * @throws File_Bittorrent_Exception if decoded data contains trailing garbage
     */
     function decode($str)
     {
-        $this->_source = $str;
-        $this->_position  = 0;
-        $this->_source_length = strlen($this->_source);
-        $result = $this->_bdecode();
-        if ($this->_position < $this->_source_length) {
-            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::decode() - Trailing garbage in file.');
-            return false;
+        $this->source = $str;
+        $this->position  = 0;
+        $this->source_length = strlen($this->source);
+        $result = $this->bdecode();
+        if ($this->position < $this->source_length) {
+			throw new File_Bittorrent_Exception('Trailing garbage in file.', File_Bittorrent_Exception::decode);
         }
         return $result;
     }
@@ -179,13 +166,13 @@ class File_Bittorrent_Decode
     *
     * @param string    Filename
     * @return mixed    Returns an arrayon success or false on error
+    * @throws File_Bittorrent_Exception if no file given or bencoded data is corrupt
     */
     function decodeFile($file)
     {
         // Check file
         if (!is_file($file)) {
-            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::decode() - Not a file.', null, null, "Given filename '$file' is not a valid file.");
-            return false;
+            throw new File_Bittorrent_Exception('Given filename \'' . $file . '\' is not a valid file.', File_Bittorrent_Exception::source);
         }
 
         // Reset public attributes
@@ -198,16 +185,15 @@ class File_Bittorrent_Decode
         $this->created_by    = '';
         $this->announce      = '';
         $this->announce_list = array();
-        $this->_position     = 0;
+        $this->position     = 0;
         $this->info_hash     = '';
 
         // Decode .torrent
-        $this->_source = file_get_contents($file);
-        $this->_source_length = strlen($this->_source);
-        $this->decoded = $this->_bdecode();
+        $this->source = file_get_contents($file);
+        $this->source_length = strlen($this->source);
+        $this->decoded = $this->bdecode();
         if (!is_array($this->decoded)) {
-            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::decode() - Corrupted bencoded data.', null, null, "Failed to decode data from file '$file'.");
-            return false;
+			throw new File_Bittorrent_Exception('Corrupted bencoded data. Failed to decode data from file \'$file\'.', File_Bittorrent_Exception::decode);
         }
 
         // Compute info_hash
@@ -280,32 +266,32 @@ class File_Bittorrent_Decode
             'size'          => $this->size,
             'announce'      => $this->announce,
             'announce_list' => $this->announce_list,
+            'info_hash'     => $this->info_hash,
         );
     }
 
     /**
     * Decode a BEncoded String
     *
-    * @access private
     * @return mixed    Returns the representation of the data in the BEncoded string or false on error
     */
-    function _bdecode()
+    protected function bdecode()
     {
-        switch ($this->_getChar()) {
+        switch ($this->getChar()) {
         case 'i':
-            $this->_position++;
-            return $this->_decode_int();
+            $this->position++;
+            return $this->decode_int();
             break;
         case 'l':
-            $this->_position++;
-            return $this->_decode_list();
+            $this->position++;
+            return $this->decode_list();
             break;
         case 'd':
-            $this->_position++;
-            return $this->_decode_dict();
+            $this->position++;
+            return $this->decode_dict();
             break;
         default:
-            return $this->_decode_string();
+            return $this->decode_string();
         }
     }
 
@@ -317,49 +303,40 @@ class File_Bittorrent_Decode
     * dictionary {"key":"value", "Monduna":"com", "bit":"Torrents", "number":7}
     * would bEncode to d3:key5:value7:Monduna3:com3:bit:8:Torrents6:numberi7ee
     *
-    * @access private
     * @return array
+    * @throws File_Bittorrent_Exception if bencoded dictionary contains invalid data
     */
-    function _decode_dict()
+    protected function decode_dict()
     {
         $return = array();
         $ended = false;
         $lastkey = NULL;
-        while ($char = $this->_getChar()) {
+        while ($char = $this->getChar()) {
             if ($char == 'e') {
                 $ended = true;
                 break;
             }
             if (!ctype_digit($char)) {
-                $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_dict() - Invalid dictionary key.');
-                $return = false;
-                break;
+				throw new File_Bittorrent_Exception('Invalid dictionary key.', File_Bittorrent_Exception::decode);
             }
-            $key = $this->_decode_string();
+            $key = $this->decode_string();
             if (isset($return[$key])) {
-                $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_dict() - Duplicate dictionary key.');
-                $return = false;
-                break;
+                throw new File_Bittorrent_Exception('Duplicate dictionary key.', File_Bittorrent_Exception::decode);
             }
             if ($key < $lastkey) {
-                $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_dict() - Missorted dictionary key.');
-                $return = false;
-                break;
+                throw new File_Bittorrent_Exception('Missorted dictionary key.', File_Bittorrent_Exception::decode);
             }
-            $val = $this->_bdecode();
+            $val = $this->bdecode();
             if ($val === false) {
-                $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_dict() - Invalid value.');
-                $return = false;
-                break;
+                throw new File_Bittorrent_Exception('Invalid value.', File_Bittorrent_Exception::decode);
             }
             $return[$key] = $val;
             $lastkey = $key;
         }
         if (!$ended) {
-            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_dict() - Unterminated dictionary.');
-            $return = false;
+            throw new File_Bittorrent_Exception('Unterminated dictionary.', File_Bittorrent_Exception::decode);
         }
-        $this->_position++;
+        $this->position++;
         return $return;
     }
 
@@ -370,37 +347,34 @@ class File_Bittorrent_Decode
     * For example, "Monduna" would bEncode to 7:Monduna and "BitTorrents"
     * would bEncode to 11:BitTorrents.
     *
-    * @access private
     * @return string|false
+    * @throws File_Bittorrent_Exception if bencoded data is invalid
     */
-    function _decode_string()
+    protected function decode_string()
     {
         // Check for bad leading zero
-        if (substr($this->_source, $this->_position, 1) == '0' and
-        substr($this->_source, $this->_position + 1, 1) != ':') {
-            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_string() - Leading zero in string length.');
-            return false;
+        if (substr($this->source, $this->position, 1) == '0' and
+        substr($this->source, $this->position + 1, 1) != ':') {
+			throw new File_Bittorrent_Exception('Leading zero in string length.', File_Bittorrent_Exception::decode);
         }
         // Find position of colon
         // Supress error message if colon is not found which may be caused by a corrupted or wrong encoded string
-        if (!$pos_colon = @strpos($this->_source, ':', $this->_position)) {
-            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_string() - Colon not found.');
-            return false;
+        if (!$pos_colon = @strpos($this->source, ':', $this->position)) {
+            throw new File_Bittorrent_Exception('Colon not found.', File_Bittorrent_Exception::decode);
         }
         // Get length of string
-        $str_length = intval(substr($this->_source, $this->_position, $pos_colon));
-        if ($str_length + $pos_colon + 1 > $this->_source_length) {
-            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_string() - Input too short for string length.');
-            return false;
+        $str_length = intval(substr($this->source, $this->position, $pos_colon));
+        if ($str_length + $pos_colon + 1 > $this->source_length) {
+            throw new File_Bittorrent_Exception('Input too short for string length.', File_Bittorrent_Exception::decode);
         }
         // Get string
         if ($str_length === 0) {
             $return = '';
         } else {
-            $return = substr($this->_source, $pos_colon + 1, $str_length);
+            $return = substr($this->source, $pos_colon + 1, $str_length);
         }
         // Move Pointer after string
-        $this->_position = $pos_colon + $str_length + 1;
+        $this->position = $pos_colon + $str_length + 1;
         return $return;
     }
 
@@ -411,34 +385,31 @@ class File_Bittorrent_Decode
     * example, 123 would bEcode to i123e, -3272002 would bEncode to
     * i-3272002e.
     *
-    * @access private
     * @return int
+    * @throws File_Bittorrent_Exception if bencoded data is invalid
     */
-    function _decode_int()
+    protected function decode_int()
     {
-        $pos_e  = strpos($this->_source, 'e', $this->_position);
-        $p = $this->_position;
+        $pos_e  = strpos($this->source, 'e', $this->position);
+        $p = $this->position;
         if ($p === $pos_e) {
-            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_int() - Empty integer.');
-            return false;
+            throw new File_Bittorrent_Exception('Empty integer.', File_Bittorrent_Exception::decode);
         }
-        if (substr($this->_source, $this->_position, 1) == '-') $p++;
-        if (substr($this->_source, $p, 1) == '0' and
-        ($p != $this->_position or $pos_e > $p+1)) {
-            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_int() - Leading zero in integer.');
-            return false;
+        if (substr($this->source, $this->position, 1) == '-') $p++;
+        if (substr($this->source, $p, 1) == '0' and
+        ($p != $this->position or $pos_e > $p+1)) {
+            throw new File_Bittorrent_Exception('Leading zero in integer.', File_Bittorrent_Exception::decode);
         }
         for ($i = $p; $i < $pos_e-1; $i++) {
-            if (!ctype_digit(substr($this->_source, $i, 1))) {
-                $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_int() - Non-digit characters in integer.');
-                return false;
+            if (!ctype_digit(substr($this->source, $i, 1))) {
+                throw new File_Bittorrent_Exception('Non-digit characters in integer.', File_Bittorrent_Exception::decode);
             }
         }
         // The return value showld be automatically casted to float if the intval would
         // overflow. The "+ 0" accomplishes exactly that, using the internal casting
         // logic of PHP
-        $return = substr($this->_source, $this->_position, $pos_e - $this->_position) + 0;
-        $this->_position = $pos_e + 1;
+        $return = substr($this->source, $this->position, $pos_e - $this->position) + 0;
+        $this->position = $pos_e + 1;
         return $return;
     }
 
@@ -451,69 +422,160 @@ class File_Bittorrent_Decode
     * l7:Monduna3:Bit8:Torrentse. The list [1, "Monduna", 3, ["Sub", "List"]]
     * would bEncode to li1e7:Mondunai3el3:Sub4:Listee
     *
-    * @access private
     * @return array
+    * @throws File_Bittorrent_Exception if bencoded data is invalid
     */
-    function _decode_list()
+    protected function decode_list()
     {
         $return = array();
-        $char = $this->_getChar();
+        $char = $this->getChar();
         $p1 = $p2 = 0;
         if ($char === false) {
-            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_list() - Unterminated list.');
-            return false;
+            throw new File_Bittorrent_Exception('Unterminated list.', File_Bittorrent_Exception::decode);
         }
-        while ($char !== false && substr($this->_source, $this->_position, 1) != 'e') {
-            $p1 = $this->_position;
-            $val = $this->_bdecode();
-            $p2 = $this->_position;
+        while ($char !== false && substr($this->source, $this->position, 1) != 'e') {
+            $p1 = $this->position;
+            $val = $this->bdecode();
+            $p2 = $this->position;
             // Empty does not work here
             if($p1 == $p2)  {
-                $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::_decode_list() - Unterminated list.');
-                return false;
+                throw new File_Bittorrent_Exception('Unterminated list.', File_Bittorrent_Exception::decode);
             }
             $return[] = $val;
         }
-        $this->_position++;
+        $this->position++;
         return $return;
     }
 
     /**
     * Get the char at the current position
     *
-    * @access private
     * @return string|false
     */
-    function _getChar()
+    protected function getChar()
     {
-        if (empty($this->_source)) return false;
-        if ($this->_position >= $this->_source_length) return false;
-        return substr($this->_source, $this->_position, 1);
+        if (empty($this->source)) return false;
+        if ($this->position >= $this->source_length) return false;
+        return substr($this->source, $this->position, 1);
     }
 
     /**
     * Returns the online stats for the torrent
     *
     * @return array|false
+    * @throws File_Bittorrent_Exception if allow_url_fopen is disabled or scrape data is invalid
     */
     function getStats()
     {
         // Check if we can access remote data
         if (!ini_get('allow_url_fopen')) {
-            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::getStats() - "allow_url_fopen" must be enabled.');
+            throw new File_Bittorrent_Exception('\'allow_url_fopen\' must be enabled.', File_Bittorrent_Exception::source);
             return false;
         }
         // Query the scrape page
         $packed_hash = pack('H*', $this->info_hash);
         $scrape_url = preg_replace('/\/announce$/', '/scrape', $this->announce) . '?info_hash=' . urlencode($packed_hash);
         $scrape_data = file_get_contents($scrape_url);
-        $stats = $this->decode($scrape_data);
-        if (!isset($stats['files'][$packed_hash])) {
-            $this->last_error = PEAR::raiseError('File_Bittorrent_Decode::getStats() - Invalid scrape data: "' . $scrape_data . '"');
-            return false;
-        }
+        try {
+			$stats = $this->decode($scrape_data);
+		} catch (File_Bittorrent_Exception $e) {
+			throw new File_Bittorrent_Exception('Invalid scrape data: \'' . $scrape_data . '\'', File_Bittorrent_Exception::decode);
+		}
+		if (!isset($stats['files'][$packed_hash])) {
+			throw new File_Bittorrent_Exception('Invalid scrape data: \'' . $scrape_data . '\'', File_Bittorrent_Exception::decode);
+		}
         return $stats['files'][$packed_hash];
     }
+
+	/**
+	* Returns the Name of the torrent
+	*
+	* @return string
+	*/
+	function getName()
+	{
+		return $this->name;
+	}
+
+	/**
+	* Returns the Filename of the torrent
+	*
+	* @return string
+	*/
+	function getFilename()
+	{
+		return $this->filename;
+	}
+
+	/**
+	* Returns the Comment of the torrent
+	*
+	* @return string
+	*/
+	function getComment()
+	{
+		return $this->comment;
+	}
+
+	/**
+	* Returns the Date of the torrent
+	*
+	* @return string
+	*/
+	function getDate()
+	{
+		return $this->date;
+	}
+
+	/**
+	* Returns the Creator info of the torrent
+	*
+	* @return string
+	*/
+	function getCreator()
+	{
+		return $this->created_by;
+	}
+
+	/**
+	* Returns the Files of the torrent
+	*
+	* @return array
+	*/
+	function getFiles()
+	{
+		return $this->files;
+	}
+
+	/**
+	* Returns the the tracker the torrent has been received from
+	*
+	* @return string
+	*/
+	function getAnnounce()
+	{
+		return $this->announce;
+	}
+
+	/**
+	* Returns the known tracker list of the torrent
+	*
+	* @return array
+	*/
+	function getAnnounceList()
+	{
+		return $this->announe_list;
+	}
+
+	/**
+	* Returns the info hash of the torrent
+	*
+	* @return string
+	*/
+	function getInfoHash()
+	{
+		return $this->info_hash;
+	}
 }
 
 ?>

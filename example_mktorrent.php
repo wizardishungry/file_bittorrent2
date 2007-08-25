@@ -4,9 +4,6 @@ error_reporting(E_ALL);
 
 require_once 'File/Bittorrent/MakeTorrent.php';
 
-// Set error handling
-PEAR::setErrorHandling(PEAR_ERROR_PRINT);
-
 $MakeTorrent = new File_Bittorrent_MakeTorrent('example.php');
 
 // Set the announce URL

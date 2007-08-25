@@ -54,7 +54,7 @@
             $File_Bittorrent_Decode = new File_Bittorrent_Decode;
             $File_Bittorrent_Decode->decodeFile(self::$torrent);
             exec('torrentinfo-console ' . escapeshellarg(self::$torrent), $bt);
-            $this->assertEquals($File_Bittorrent_Decode->info_hash, substr($bt[3], strpos($bt[3], ':') + 2));
+            $this->assertEquals($File_Bittorrent_Decode->getInfoHash(), substr($bt[3], strpos($bt[3], ':') + 2));
         }
 
         public function testDecode()
@@ -113,7 +113,16 @@
             $File_Bittorrent_Decode = new File_Bittorrent_Decode;
             ini_set('mbstring.internal_encoding','ASCII');
             foreach($test_data as $ti => $to) {
-                $this->assertEquals($to, $File_Bittorrent_Decode->decode($ti));
+				if ($to === false) {
+					try {
+						$File_Bittorrent_Decode->decode($ti);
+						$this->fail('File_Bittorrent successfully decoded invalid data.');
+					} catch (File_Bittorrent_Exception $E) {
+						if ($E->getCode() != File_Bittorrent_Exception::decode) throw $E;
+					}
+				} else {
+					$this->assertEquals($to, $File_Bittorrent_Decode->decode($ti));
+				}
             }
         }
     }

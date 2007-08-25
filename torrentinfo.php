@@ -36,9 +36,6 @@
     require_once 'File/Bittorrent/Decode.php';
     require_once 'Console/Getargs.php';
 
-    // Set error handling
-    PEAR::setErrorHandling(PEAR_ERROR_PRINT);
-
     // Get filename from command line
     $args_config = array(
         'torrent' => array(

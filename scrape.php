@@ -35,9 +35,6 @@
     require_once 'File/Bittorrent/Decode.php';
     require_once 'Console/Getargs.php';
 
-    // Set error handling
-    PEAR::setErrorHandling(PEAR_ERROR_PRINT);
-
     // Get filename from command line
     $args_config = array(
         'torrent' => array(
@@ -64,8 +61,8 @@
 
     echo "\nStatistics\n";
     echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
-    echo 'Tracker:            ' . $File_Bittorrent_Decode->announce . "\n";
-    echo 'info hash:          ' . $File_Bittorrent_Decode->info_hash . "\n";
+    echo 'Tracker:            ' . $File_Bittorrent_Decode->getAnnounce() . "\n";
+    echo 'info hash:          ' . $File_Bittorrent_Decode->getInfoHash() . "\n";
     foreach ($File_Bittorrent_Decode->getStats() as $key => $val) {
         echo str_pad($key . ':', 20) . $val . "\n";
     }

@@ -45,6 +45,7 @@
 * Include required classes
 */
 require_once 'PEAR.php';
+require_once 'File/Bittorrent/Exception.php';
 
 /**
 * Encode data in Bittorrent format
@@ -71,6 +72,7 @@ class File_Bittorrent_Encode
     *
     * @param mixed    Variable to encode
     * @return string
+    * @throws File_Bittorrent_Exception if unsupported type should be encoded
     */
     function encode($mixed)
     {
@@ -85,7 +87,7 @@ class File_Bittorrent_Encode
         case 'array':
             return $this->encode_array($mixed);
         default:
-            PEAR::raiseError('File_Bittorrent_Encode::encode() - Unsupported type.', null, null, "Variable must be one of 'string', 'integer', 'double' or 'array'");
+			throw new File_Bittorrent_Exception('Unsupported type. Variable must be one of \'string\', \'integer\', \'double\' or \'array\'', File_Bittorrent_Exception::encode);
         }
     }
 
@@ -138,7 +140,7 @@ class File_Bittorrent_Encode
     * @param array
     * @return string
     */
-    function encode_array($array)
+    function encode_array(array $array)
     {
         // Check for strings in the keys
         $isList = true;

@@ -59,65 +59,59 @@ var_dump($encodedDict);
 print_r($File_Bittorrent_Decode->decode($encodedDict));
 
 // Decode a file
-print_r($File_Bittorrent_Decode->decodeFile('freebsd.torrent'));
+print_r($File_Bittorrent_Decode->decodeFile('install-x86-universal-2005.0.iso.torrent'));
 
 /* Output of decode
 
 Array
 (
-    [name] => FreeBSD_5.2.1-RELEASE-i386-All_CDs
-    [filename] => freebsd.torrent
+    [count] => 3
+    [fruits] => Array
+        (
+            [0] => Banana
+            [1] => Apple
+            [2] => Cherry
+            [subarray] => Array
+                (
+                    [0] => 1
+                    [1] => 2
+                    [2] => 3
+                )
+
+        )
+
+    [ints] => Array
+        (
+            [0] => 1
+            [1] => 2
+            [2] => 3
+        )
+
+)
+Array
+(
+    [name] => install-x86-universal-2005.0.iso
+    [filename] => install-x86-universal-2005.0.iso.torrent
     [comment] =>
-    [date] => 1087952410
-    [created_by] => Azureus/2.1.0.0
+    [date] => 1111915968
+    [created_by] =>
     [files] => Array
         (
             [0] => Array
                 (
-                    [filename] => 5.2.1-RELEASE-i386-bootonly.iso
-                    [size] => 21692416
-                )
-
-            [1] => Array
-                (
-                    [filename] => 5.2.1-RELEASE-i386-disc1.iso
-                    [size] => 675151872
-                )
-
-            [2] => Array
-                (
-                    [filename] => 5.2.1-RELEASE-i386-disc2.iso
-                    [size] => 274857984
-                )
-
-            [3] => Array
-                (
-                    [filename] => 5.2.1-RELEASE-i386-miniinst.iso
-                    [size] => 251428864
-                )
-
-            [4] => Array
-                (
-                    [filename] => CHECKSUM.MD5
-                    [size] => 286
-                )
-
-            [5] => Array
-                (
-                    [filename] => freebsd521.sfv
-                    [size] => 683
+                    [filename] => install-x86-universal-2005.0.iso
+                    [size] => 712460288
                 )
 
         )
 
-    [size] => 1223132105
-    [announce] => http://69.156.42.20:6969/announce
+    [size] => 712460288
+    [announce] => http://titmouse.gentoo.org:6969/announce
     [announce_list] => Array
         (
-            [0] => http://glimux.sytes.net:6969/announce
-            [1] => http://69.156.42.20:6969/announce
         )
 
+    [info_hash] => f94b8d2d38632a6589d8121106059989f290b569
 )
 
 */

@@ -22,20 +22,20 @@ http://pear.php.net/dtd/package-2.0.xsd">
         <email>j.nagash@gmail.com</email>
         <active>no</active>
     </developer>
-    <date>2007-03-13</date>
+    <date>2007-08-25</date>
     <time>00:00:00</time>
     <version>
-        <release>1.1.0</release>
-        <api>63</api>
+        <release>2.0.0b1</release>
+        <api>74</api>
     </version>
     <stability>
-        <release>stable</release>
+        <release>beta</release>
         <api>stable</api>
     </stability>
     <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
     <notes>
-        * Stable release
-        * Switched Tests to PHPUnit3
+        * First PHP5 only release
+        * Introduced Exceptions
     </notes>
     <contents>
         <dir name="/">
@@ -44,6 +44,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
                     <file name="Decode.php" role="php" />
                     <file name="Encode.php" role="php" />
                     <file name="MakeTorrent.php" role="php" />
+                    <file name="Exception.php" role="php" />
                 </dir>
             </dir>
             <file name="example.php" role="doc" />
@@ -62,16 +63,11 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <dependencies>
         <required>
             <php>
-                <min>4.4.0</min>
+                <min>5.0.0</min>
             </php>
             <pearinstaller>
                 <min>1.4.2</min>
             </pearinstaller>
-            <package>
-                <name>PHP_Compat</name>
-                <channel>pear.php.net</channel>
-                <min>1.1.0</min>
-            </package>
         </required>
     </dependencies>
     <phprelease />
@@ -307,6 +303,23 @@ http://pear.php.net/dtd/package-2.0.xsd">
             <notes>
                 * Stable release
                 * Switched Tests to PHPUnit3
+            </notes>
+        </release>
+        <release>
+            <date>2007-08-25</date>
+            <time>00:00:00</time>
+            <version>
+                <release>2.0.0b1</release>
+                <api>74</api>
+            </version>
+            <stability>
+                <release>beta</release>
+                <api>stable</api>
+            </stability>
+            <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+            <notes>
+                * First PHP5 only release
+                * Introduced Exceptions
             </notes>
         </release>
     </changelog>
