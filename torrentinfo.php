@@ -22,7 +22,7 @@
     // +----------------------------------------------------------------------+
 
     /**
-    * File_Bittorrent Example
+    * File_Bittorrent2 Example
     * Get Info from a .torrent file
     *
     * Usage:
@@ -33,7 +33,7 @@
     */
 
     // Includes
-    require_once 'File/Bittorrent/Decode.php';
+    require_once 'File/Bittorrent2/Decode.php';
     require_once 'Console/Getargs.php';
 
     // Get filename from command line
@@ -56,8 +56,8 @@
         exit;
     }
 
-    $File_Bittorrent_Decode = new File_Bittorrent_Decode;
-    $info = $File_Bittorrent_Decode->decodeFile($torrent);
+    $File_Bittorrent2_Decode = new File_Bittorrent2_Decode;
+    $info = $File_Bittorrent2_Decode->decodeFile($torrent);
 
     foreach ($info as $key => $val) {
         echo str_pad($key . ': ', 20, ' ', STR_PAD_LEFT);

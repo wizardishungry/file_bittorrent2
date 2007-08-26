@@ -35,7 +35,7 @@
     error_reporting(E_ALL);
 
     // Includes
-    require_once 'File/Bittorrent/Decode.php';
+    require_once 'File/Bittorrent2/Decode.php';
     require_once 'Console/Getargs.php';
 
     // Get filename from command line
@@ -58,12 +58,12 @@
         exit;
     }
 
-    $File_Bittorrent_Decode = new File_Bittorrent_Decode;
-    $File_Bittorrent_Decode->decodeFile($torrent);
+    $File_Bittorrent2_Decode = new File_Bittorrent2_Decode;
+    $File_Bittorrent2_Decode->decodeFile($torrent);
 
     echo "\nInfo Hash\n";
     echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
-    echo "This:                " . $File_Bittorrent_Decode->getInfoHash() . "\n";
+    echo "This:                " . $File_Bittorrent2_Decode->getInfoHash() . "\n";
     
     exec('torrentinfo-console ' . escapeshellarg($torrent), $bt);
     echo "torrentinfo-console: " . substr($bt[3], strpos($bt[3], ':') + 2) . "\n";

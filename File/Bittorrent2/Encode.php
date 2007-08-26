@@ -35,7 +35,7 @@
 * Integers, Strings, Lists and Dictionaries.
 * [http://www.monduna.com/bt/faq.html]
 *
-* @package File_Bittorrent
+* @package File_Bittorrent2
 * @category File
 * @author Markus Tacker <m@tacker.org>
 * @version $Id$
@@ -45,7 +45,7 @@
 * Include required classes
 */
 require_once 'PEAR.php';
-require_once 'File/Bittorrent/Exception.php';
+require_once 'File/Bittorrent2/Exception.php';
 
 /**
 * Encode data in Bittorrent format
@@ -61,18 +61,18 @@ require_once 'File/Bittorrent/Exception.php';
 * Integers, Strings, Lists and Dictionaries.
 * [http://www.monduna.com/bt/faq.html]
 *
-* @package File_Bittorrent
+* @package File_Bittorrent2
 * @category File
 * @author Markus Tacker <m@tacker.org>
 */
-class File_Bittorrent_Encode
+class File_Bittorrent2_Encode
 {
     /**
     * Encode a var in BEncode format
     *
     * @param mixed    Variable to encode
     * @return string
-    * @throws File_Bittorrent_Exception if unsupported type should be encoded
+    * @throws File_Bittorrent2_Exception if unsupported type should be encoded
     */
     function encode($mixed)
     {
@@ -87,7 +87,7 @@ class File_Bittorrent_Encode
         case 'array':
             return $this->encode_array($mixed);
         default:
-			throw new File_Bittorrent_Exception('Unsupported type. Variable must be one of \'string\', \'integer\', \'double\' or \'array\'', File_Bittorrent_Exception::encode);
+			throw new File_Bittorrent2_Exception('Unsupported type. Variable must be one of \'string\', \'integer\', \'double\' or \'array\'', File_Bittorrent2_Exception::encode);
         }
     }
 

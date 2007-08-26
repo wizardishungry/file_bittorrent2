@@ -32,7 +32,7 @@
     */
 
     // Includes
-    require_once 'File/Bittorrent/Decode.php';
+    require_once 'File/Bittorrent2/Decode.php';
     require_once 'Console/Getargs.php';
 
     // Get filename from command line
@@ -56,14 +56,14 @@
     }
 
     // Decode the torrent
-    $File_Bittorrent_Decode = new File_Bittorrent_Decode;
-    $File_Bittorrent_Decode->decodeFile($torrent);
+    $File_Bittorrent2_Decode = new File_Bittorrent2_Decode;
+    $File_Bittorrent2_Decode->decodeFile($torrent);
 
     echo "\nStatistics\n";
     echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
-    echo 'Tracker:            ' . $File_Bittorrent_Decode->getAnnounce() . "\n";
-    echo 'info hash:          ' . $File_Bittorrent_Decode->getInfoHash() . "\n";
-    foreach ($File_Bittorrent_Decode->getStats() as $key => $val) {
+    echo 'Tracker:            ' . $File_Bittorrent2_Decode->getAnnounce() . "\n";
+    echo 'info hash:          ' . $File_Bittorrent2_Decode->getInfoHash() . "\n";
+    foreach ($File_Bittorrent2_Decode->getStats() as $key => $val) {
         echo str_pad($key . ':', 20) . $val . "\n";
     }
 

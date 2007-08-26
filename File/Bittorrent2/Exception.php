@@ -22,9 +22,9 @@
 // +----------------------------------------------------------------------+
 
 /**
-* Exception for File_Bittorrent
+* Exception for File_Bittorrent2
 *
-* @package File_Bittorrent
+* @package File_Bittorrent2
 * @category File
 * @author Markus Tacker <m@tacker.org>
 * @version $Id$
@@ -36,14 +36,14 @@
 require_once 'PEAR/Exception.php';
 
 /**
-* Exception for File_Bittorrent
+* Exception for File_Bittorrent2
 *
-* @package File_Bittorrent
+* @package File_Bittorrent2
 * @category File
 * @author Markus Tacker <m@tacker.org>
 * @version $Id$
 */
-class File_Bittorrent_Exception extends PEAR_Exception {
+class File_Bittorrent2_Exception extends PEAR_Exception {
 	/**
 	* @global int Exception happened during data decoding
 	*/

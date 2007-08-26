@@ -32,7 +32,7 @@
  * @author Justin Jones <j.nagash@gmail.com>
  * @author Markus Tacker <m@tacker.org>
  * @version $Id$
- * @package File_Bittorrent
+ * @package File_Bittorrent2
  * @category File
  */
 
@@ -40,8 +40,8 @@
  * Include required classes
  */
 require_once 'PEAR.php';
-require_once 'File/Bittorrent/Encode.php';
-require_once 'File/Bittorrent/Exception.php';
+require_once 'File/Bittorrent2/Encode.php';
+require_once 'File/Bittorrent2/Exception.php';
 
 /**
  * Provides a class for making .torrent files
@@ -51,10 +51,10 @@ require_once 'File/Bittorrent/Exception.php';
  *
  * @author Justin Jones <j.nagash@gmail.com>
  * @author Markus Tacker <m@tacker.org>
- * @package File_Bittorrent
+ * @package File_Bittorrent2
  * @category File
  */
-class File_Bittorrent_MakeTorrent
+class File_Bittorrent2_MakeTorrent
 {
     /**
      * @var string Path to the file or directory to create the torrent from.
@@ -89,7 +89,7 @@ class File_Bittorrent_MakeTorrent
     /**
      * @var string The .torrent created by string
      */
-    protected $created_by = 'File_Bittorrent_MakeTorrent $Rev$. http://pear.php.net/package/File_Bittorrent';
+    protected $created_by = 'File_Bittorrent2_MakeTorrent $Rev$. http://pear.php.net/package/File_Bittorrent';
 
     /**
      * @var string The .torrent suggested name (file/dir)
@@ -134,7 +134,7 @@ class File_Bittorrent_MakeTorrent
      *
      * @param string Path to use
      */
-    function File_Bittorrent_MakeTorrent($path)
+    function File_Bittorrent2_MakeTorrent($path)
     {
         $this->setPath($path);
     }
@@ -208,12 +208,12 @@ class File_Bittorrent_MakeTorrent
      *
      * @param int piece length in kilobytes
      * @return bool
-	 * @throws File_Bittorrent_Exception if piece length is invalid
+	 * @throws File_Bittorrent2_Exception if piece length is invalid
      */
     function setPieceLength($piece_length)
     {
         if ($piece_length < 32 or $piece_length > 4096) {
-			throw new File_Bittorrent_Exception('Invalid piece lenth: \'' . $piece_length . '\'', File_Bittorrent_Exception::make);
+			throw new File_Bittorrent2_Exception('Invalid piece lenth: \'' . $piece_length . '\'', File_Bittorrent2_Exception::make);
         }
         $this->piece_length = $piece_length * 1024;
         return true;
@@ -225,7 +225,7 @@ class File_Bittorrent_MakeTorrent
      * with the set* functions.
      *
      * @return mixed false on failure or a string containing the metainfo
-	 * @throws File_Bittorrent_Exception if no file or directory is given
+	 * @throws File_Bittorrent2_Exception if no file or directory is given
      */
     function buildTorrent()
     {
@@ -242,7 +242,7 @@ class File_Bittorrent_MakeTorrent
             }
             $metainfo = $this->encodeTorrent();
         } else {
-            throw new File_Bittorrent_Exception('You must provide a file or directory.', File_Bittorrent_Exception::make);
+            throw new File_Bittorrent2_Exception('You must provide a file or directory.', File_Bittorrent2_Exception::make);
             return false;
         }
         return $metainfo;
@@ -254,7 +254,7 @@ class File_Bittorrent_MakeTorrent
      *
      * @param array file data
      * @return mixed false on failure or the bencoded metainfo string
-	 * @throws File_Bittorrent_Exception if no file or directory is defined
+	 * @throws File_Bittorrent2_Exception if no file or directory is defined
      */
     protected function encodeTorrent(array $info = array())
     {
@@ -270,7 +270,7 @@ class File_Bittorrent_MakeTorrent
             }
             $bencdata['info']['files'] = $this->files;
         } else {
-			throw new File_Bittorrent_Exception('Use ' .  __CLASS__ . '::setPath() to define a file or directory.', File_Bittorrent_Exception::make);
+			throw new File_Bittorrent2_Exception('Use ' .  __CLASS__ . '::setPath() to define a file or directory.', File_Bittorrent2_Exception::make);
         }
         $bencdata['info']['name']         = $this->name;
         $bencdata['info']['piece length'] = $this->piece_length;
@@ -281,7 +281,7 @@ class File_Bittorrent_MakeTorrent
         $bencdata['created by']           = $this->created_by;
         // $bencdata['announce-list'] = array($this->announce)
         // Encode it
-        $Encoder = new File_Bittorrent_Encode;
+        $Encoder = new File_Bittorrent2_Encode;
         return $Encoder->encode_array($bencdata);
     }
 
@@ -291,12 +291,12 @@ class File_Bittorrent_MakeTorrent
      *
      * @param string path to the file
      * @return mixed false on failure or file metainfo data
-     * @throws File_Bittorrent_Exception if given file cannot be opened
+     * @throws File_Bittorrent2_Exception if given file cannot be opened
      */
     protected function addFile($file)
     {
         if (!$this->openFile($file)) {
-			throw new File_Bittorrent_Exception('Failed to open file \'' . $file . '\'.', File_Bittorrent_Exception::source);
+			throw new File_Bittorrent2_Exception('Failed to open file \'' . $file . '\'.', File_Bittorrent2_Exception::source);
         }
 
         $filelength = 0;
@@ -437,19 +437,19 @@ class File_Bittorrent_MakeTorrent
      *
      * @param string path to the file
      * @return bool
-     * @throws File_Bittorrent_Exception if opening file fails or is larger than 2GB (on Windows only)
+     * @throws File_Bittorrent2_Exception if opening file fails or is larger than 2GB (on Windows only)
      */
     protected function openFile($file)
     {
         $fsize = $this->filesize($file);
         if ($fsize <= 2*1024*1024*1024) {
             if (!$this->fp = fopen($file, 'r')) {
-				throw new File_Bittorrent_Exception('Failed to open \'' . $file . '\'', File_Bittorrent_Exception::source);
+				throw new File_Bittorrent2_Exception('Failed to open \'' . $file . '\'', File_Bittorrent2_Exception::source);
             }
             $this->fopen = true;
         } else {
             if (PHP_OS != 'Linux') {
-                throw new File_Bittorrent_Exception('File size is greater than 2GB. This is only supported under Linux.', File_Bittorrent_Exception::make);
+                throw new File_Bittorrent2_Exception('File size is greater than 2GB. This is only supported under Linux.', File_Bittorrent2_Exception::make);
             }
             $this->fp = popen('cat ' . escapeshellarg($file), 'r');
             $this->fopen = false;

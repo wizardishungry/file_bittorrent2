@@ -7,14 +7,14 @@
     *
     * @author Justin "nagash" Jones <j dot nagash at gmail dot com>
     * @version $Id$
-    * @package File_Bittorrent
+    * @package File_Bittorrent2
     * @subpackage Bugs
     */
 
-require_once '../File/Bittorrent/Encode.php';
-require_once '../File/Bittorrent/Decode.php';
-$decoder = new File_Bittorrent_Decode;
-$encoder = new File_Bittorrent_Encode;
+require_once '../File/Bittorrent2/Encode.php';
+require_once '../File/Bittorrent2/Decode.php';
+$decoder = new File_Bittorrent2_Decode;
+$encoder = new File_Bittorrent2_Encode;
 error_reporting(E_ALL);
 
 $data = array(

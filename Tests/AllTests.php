@@ -22,9 +22,9 @@
 // +----------------------------------------------------------------------+
 
     /**
-    * Test for File_Bittorrent
+    * Test for File_Bittorrent2
     *
-    * @package File_Bittorrent
+    * @package File_Bittorrent2
     * @subpackage Test
     * @category File
     * @author Markus Tacker <m@tacker.org>
@@ -34,14 +34,14 @@
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
 
-    require_once 'Tests/FileBittorrent.php';
+    require_once 'Tests/FileBittorrent2.php';
     require_once 'Tests/Bug7406.php';
     require_once 'Tests/Bug8085.php';
 
     /**
-    * Test for File_Bittorrent
+    * Test for File_Bittorrent2
     *
-    * @package File_Bittorrent
+    * @package File_Bittorrent2
     * @subpackage Test
     * @category File
     * @author Markus Tacker <m@tacker.org>
@@ -52,7 +52,7 @@
         public static function suite() {
             $suite = new PHPUnit_Framework_TestSuite();
 
-            $suite->addTestSuite('Tests_FileBittorrent');
+            $suite->addTestSuite('Tests_FileBittorrent2');
             $suite->addTestSuite('Tests_Bug7406');
             $suite->addTestSuite('Tests_Bug8085');
 

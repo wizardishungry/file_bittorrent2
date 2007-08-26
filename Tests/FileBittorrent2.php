@@ -22,9 +22,9 @@
 // +----------------------------------------------------------------------+
 
     /**
-    * Test for File_Bittorrent
+    * Test for File_Bittorrent2
     *
-    * @package File_Bittorrent
+    * @package File_Bittorrent2
     * @subpackage Test
     * @category File
     * @author Markus Tacker <m@tacker.org>
@@ -33,28 +33,28 @@
     */
 
     require_once 'PHPUnit/Framework/TestCase.php';
-    require_once 'File/Bittorrent/Decode.php';
+    require_once 'File/Bittorrent2/Decode.php';
 
     /**
-    * Test for File_Bittorrent
+    * Test for File_Bittorrent2
     *
-    * @package File_Bittorrent
+    * @package File_Bittorrent2
     * @subpackage Test
     * @category File
     * @author Markus Tacker <m@tacker.org>
     * @author Robin H. Johnson <robbat2@gentoo.org>
     * @version $Id$
     */
-    class Tests_FileBittorrent extends PHPUnit_Framework_TestCase
+    class Tests_FileBittorrent2 extends PHPUnit_Framework_TestCase
     {
         public static $torrent = './install-x86-universal-2005.0.iso.torrent';
 
         public function testInfoHash()
         {
-            $File_Bittorrent_Decode = new File_Bittorrent_Decode;
-            $File_Bittorrent_Decode->decodeFile(self::$torrent);
+            $File_Bittorrent2_Decode = new File_Bittorrent2_Decode;
+            $File_Bittorrent2_Decode->decodeFile(self::$torrent);
             exec('torrentinfo-console ' . escapeshellarg(self::$torrent), $bt);
-            $this->assertEquals($File_Bittorrent_Decode->getInfoHash(), substr($bt[3], strpos($bt[3], ':') + 2));
+            $this->assertEquals($File_Bittorrent2_Decode->getInfoHash(), substr($bt[3], strpos($bt[3], ':') + 2));
         }
 
         public function testDecode()
@@ -110,18 +110,18 @@
             );
             // Thanks to IsoHunt.com for the last 3 testcases of bad data seen in their system.
 
-            $File_Bittorrent_Decode = new File_Bittorrent_Decode;
+            $File_Bittorrent2_Decode = new File_Bittorrent2_Decode;
             ini_set('mbstring.internal_encoding','ASCII');
             foreach($test_data as $ti => $to) {
 				if ($to === false) {
 					try {
-						$File_Bittorrent_Decode->decode($ti);
-						$this->fail('File_Bittorrent successfully decoded invalid data.');
-					} catch (File_Bittorrent_Exception $E) {
-						if ($E->getCode() != File_Bittorrent_Exception::decode) throw $E;
+						$File_Bittorrent2_Decode->decode($ti);
+						$this->fail('File_Bittorrent2 successfully decoded invalid data.');
+					} catch (File_Bittorrent2_Exception $E) {
+						if ($E->getCode() != File_Bittorrent2_Exception::decode) throw $E;
 					}
 				} else {
-					$this->assertEquals($to, $File_Bittorrent_Decode->decode($ti));
+					$this->assertEquals($to, $File_Bittorrent2_Decode->decode($ti));
 				}
             }
         }

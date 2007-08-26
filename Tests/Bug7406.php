@@ -25,7 +25,7 @@
     * Test for Bug #7406
     *
     * @link http://pear.php.net/bugs/bug.php?id=7406
-    * @package File_Bittorrent
+    * @package File_Bittorrent2
     * @subpackage Test
     * @category File
     * @author Markus Tacker <m@tacker.org>
@@ -33,14 +33,14 @@
     */
 
     require_once 'PHPUnit/Framework/TestCase.php';
-    require_once 'File/Bittorrent/MakeTorrent.php';
-    require_once 'File/Bittorrent/Decode.php';
+    require_once 'File/Bittorrent2/MakeTorrent.php';
+    require_once 'File/Bittorrent2/Decode.php';
 
     /**
     * Test for Bug #7406
     *
     * @link http://pear.php.net/bugs/bug.php?id=7406
-    * @package File_Bittorrent
+    * @package File_Bittorrent2
     * @subpackage Test
     * @category File
     * @author Markus Tacker <m@tacker.org>
@@ -52,7 +52,7 @@
 
         public function testAnnounceList()
         {
-            $MakeTorrent = new File_Bittorrent_MakeTorrent(self::$torrent);
+            $MakeTorrent = new File_Bittorrent2_MakeTorrent(self::$torrent);
             // Set the announce URL
             $MakeTorrent->setAnnounce('http://www.example.org');
             // Set the comment
@@ -62,7 +62,7 @@
             // Build the torrent
             $metainfo = $MakeTorrent->buildTorrent();
 
-            $Decode = new File_Bittorrent_Decode();
+            $Decode = new File_Bittorrent2_Decode();
             $info = $Decode->decode($metainfo);
             $this->assertEquals(count($info['info']['files']), 3);
             $files = array();

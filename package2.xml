@@ -3,12 +3,13 @@
 http://pear.php.net/dtd/tasks-1.0.xsd
 http://pear.php.net/dtd/package-2.0
 http://pear.php.net/dtd/package-2.0.xsd">
-    <name>File_Bittorrent</name>
+    <name>File_Bittorrent2</name>
     <channel>pear.php.net</channel>
     <summary>Decode and Encode data in Bittorrent format</summary>
     <description>
         This package consists of three classes which handles the encoding and decoding of data in Bittorrent format.
         You can also extract useful informations from .torrent files, create .torrent files and query the torrent&apos;s scrape page to get its statistics.
+	PHP5 only.
     </description>
     <lead>
         <name>Markus Tacker</name>
@@ -22,10 +23,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
         <email>j.nagash@gmail.com</email>
         <active>no</active>
     </developer>
-    <date>2007-08-25</date>
+    <date>2007-08-26</date>
     <time>00:00:00</time>
     <version>
-        <release>2.0.0b1</release>
+        <release>1.0.0RC1</release>
         <api>74</api>
     </version>
     <stability>
@@ -40,7 +41,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <contents>
         <dir name="/">
             <dir name="File">
-                <dir name="Bittorrent">
+                <dir name="Bittorrent2">
                     <file name="Decode.php" role="php" />
                     <file name="Encode.php" role="php" />
                     <file name="MakeTorrent.php" role="php" />
@@ -56,7 +57,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
                 <file name="AllTests.php" role="test" />
                 <file name="Bug7406.php" role="test" />
                 <file name="Bug8085.php" role="test" />
-                <file name="FileBittorrent.php" role="test" />
+                <file name="FileBittorrent2.php" role="test" />
             </dir>
         </dir>
     </contents>
@@ -73,243 +74,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <phprelease />
     <changelog>
         <release>
-            <version>
-                <release>0.1</release>
-                <api>0.1</api>
-            </version>
-            <stability>
-                <release>alpha</release>
-                <api>alpha</api>
-            </stability>
-            <date>2004-06-25</date>
-            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
-            <notes>First release as proposal.</notes>
-        </release>
-        <release>
-            <version>
-                <release>0.1.1</release>
-                <api>0.1.1</api>
-            </version>
-            <stability>
-                <release>alpha</release>
-                <api>alpha</api>
-            </stability>
-            <date>2004-06-28</date>
-            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
-            <notes>Split encoding and decoding in two classes. Now you can encode vars and decode strings, not only .torrent files. </notes>
-        </release>
-        <release>
-            <version>
-                <release>0.1.2</release>
-                <api>0.1.2</api>
-            </version>
-            <stability>
-                <release>alpha</release>
-                <api>alpha</api>
-            </stability>
-            <date>2004-07-11</date>
-            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
-            <notes>Implemented changes suggestested during call for votes. </notes>
-        </release>
-        <release>
-            <version>
-                <release>0.1.3</release>
-                <api>0.1.3</api>
-            </version>
-            <stability>
-                <release>beta</release>
-                <api>beta</api>
-            </stability>
-            <date>2005-01-31</date>
-            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
-            <notes>Fixed Bug #3222. Set state to beta.</notes>
-        </release>
-        <release>
-            <version>
-                <release>0.1.4</release>
-                <api>0.1.4</api>
-            </version>
-            <stability>
-                <release>beta</release>
-                <api>beta</api>
-            </stability>
-            <date>2005-02-04</date>
-            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
-            <notes>Fixed an infinite loop when dictionaries where not closed properly.</notes>
-        </release>
-        <release>
-            <version>
-                <release>0.1.5</release>
-                <api>0.1.5</api>
-            </version>
-            <stability>
-                <release>beta</release>
-                <api>beta</api>
-            </stability>
-            <date>2005-02-07</date>
-            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
-            <notes>This release *really* fixes Bug #3222, which was not fixed properly in 0.1.3. </notes>
-        </release>
-        <release>
-            <version>
-                <release>0.1.6</release>
-                <api>0.1.6</api>
-            </version>
-            <stability>
-                <release>beta</release>
-                <api>beta</api>
-            </stability>
-            <date>2005-02-22</date>
-            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
-            <notes>Fix for Bug #3532. Removed integer parsing where not neccessary.</notes>
-        </release>
-        <release>
-            <version>
-                <release>0.1.7</release>
-                <api>0.1.7</api>
-            </version>
-            <stability>
-                <release>beta</release>
-                <api>beta</api>
-            </stability>
-            <date>2005-06-20</date>
-            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
-            <notes>Fixed Bug #3970 (Encoding integers as strings) and Bug #4570 (Arrays with null values breaks encoding).</notes>
-        </release>
-        <release>
-            <version>
-                <release>0.1.8</release>
-                <api>0.1.8</api>
-            </version>
-            <stability>
-                <release>beta</release>
-                <api>beta</api>
-            </stability>
-            <date>2005-06-21</date>
-            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
-            <notes>Fixed Bug #4570 (Array with empty array values were not decoded properly). </notes>
-        </release>
-        <release>
+            <date>2007-08-26</date>
+            <time>00:00:00</time>
             <version>
                 <release>1.0.0RC1</release>
-                <api>1.0.0RC1</api>
-            </version>
-            <stability>
-                <release>beta</release>
-                <api>beta</api>
-            </stability>
-            <date>2005-07-20</date>
-            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
-            <notes>Removed UTF-8 de- and encoding which fixes invalid info_hashes. Added File_Bittorrent_MakeTorrent which creates .torrent files. </notes>
-        </release>
-        <release>
-            <version>
-                <release>1.0.0RC2</release>
-                <api>1.0.0RC2</api>
-            </version>
-            <stability>
-                <release>beta</release>
-                <api>beta</api>
-            </stability>
-            <date>2005-07-25</date>
-            <license uri="http://www.php.net/license/3_0.txt">PHP</license>
-            <notes>Added querying of the tracker to decoder. Fixed a bug where only the first level of the path was displayed with File_Bittorrent::decodeFile(). </notes>
-        </release>
-        <release>
-            <date>2005-10-19</date>
-            <version>
-                <release>1.0.0</release>
-                <api>49</api>
-            </version>
-            <stability>
-                <release>stable</release>
-                <api>stable</api>
-            </stability>
-            <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
-            <notes>
-                * First stable release
-                * Changed license from PHP to LGPL.
-                * Changed package.xml to version 2.
-                * A warm welcome to Justin (handle: nagash) as new developer.
-                * Enhances File_Bittorrent_Decode::decodeFile() filename handling.
-                * Check for allow_url_fopen.
-                * Raise an error in File_Bittorrent_MakeTorrent if no file is given.
-                * Save last PEAR_Error object in public property.
-            </notes>
-        </release>
-        <release>
-            <date>2006-07-02</date>
-            <version>
-                <release>1.0.1</release>
-                <api>57</api>
-            </version>
-            <stability>
-                <release>stable</release>
-                <api>stable</api>
-            </stability>
-            <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
-            <notes>
-                * Updated dependencies to PEAR 1.4.2 / PHP 4.4.
-                * Fixed _addDir return value. Bug #7406.
-                * Changed announce_list behaviour. Bug #8085.
-            </notes>
-        </release>
-        <release>
-            <date>2006-09-04</date>
-            <version>
-                <release>1.0.2</release>
-                <api>62</api>
-            </version>
-            <stability>
-                <release>stable</release>
-                <api>stable</api>
-            </stability>
-            <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
-            <notes>
-                * Alexiev fixed bug #5836
-                * Added test for info hash
-            </notes>
-        </release>
-        <release>
-            <date>2006-10-23</date>
-            <time>00:00:00</time>
-            <version>
-                <release>1.1.0RC1</release>
-                <api>63</api>
-            </version>
-            <stability>
-                <release>beta</release>
-                <api>stable</api>
-            </stability>
-            <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
-            <notes>
-                * Added enhancements to invalid data from Bug #9093. Thanks to Robin H. Johnson.
-                * Added AllTests.php
-                * Added tests to release
-            </notes>
-        </release>
-        <release>
-            <date>2007-03-13</date>
-            <time>00:00:00</time>
-            <version>
-                <release>1.1.0</release>
-                <api>63</api>
-            </version>
-            <stability>
-                <release>stable</release>
-                <api>stable</api>
-            </stability>
-            <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
-            <notes>
-                * Stable release
-                * Switched Tests to PHPUnit3
-            </notes>
-        </release>
-        <release>
-            <date>2007-08-25</date>
-            <time>00:00:00</time>
-            <version>
-                <release>2.0.0b1</release>
                 <api>74</api>
             </version>
             <stability>

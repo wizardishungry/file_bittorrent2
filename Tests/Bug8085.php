@@ -25,7 +25,7 @@
     * Test for Bug #8085
     *
     * @link http://pear.php.net/bugs/bug.php?id=8085
-    * @package File_Bittorrent
+    * @package File_Bittorrent2
     * @subpackage Test
     * @category File
     * @author Markus Tacker <m@tacker.org>
@@ -33,13 +33,13 @@
     */
 
     require_once 'PHPUnit/Framework/TestCase.php';
-    require_once 'File/Bittorrent/Decode.php';
+    require_once 'File/Bittorrent2/Decode.php';
 
     /**
     * Test for Bug #8085
     *
     * @link http://pear.php.net/bugs/bug.php?id=8085
-    * @package File_Bittorrent
+    * @package File_Bittorrent2
     * @subpackage Test
     * @category File
     * @author Markus Tacker <m@tacker.org>
@@ -51,7 +51,7 @@
 
         public function testAnnounceList()
         {
-            $Decode = new File_Bittorrent_Decode;
+            $Decode = new File_Bittorrent2_Decode;
             $info = $Decode->decodeFile(self::$torrent);
             $expected = array (
                 array (

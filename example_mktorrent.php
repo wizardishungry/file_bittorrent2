@@ -2,9 +2,9 @@
 
 error_reporting(E_ALL);
 
-require_once 'File/Bittorrent/MakeTorrent.php';
+require_once 'File/Bittorrent2/MakeTorrent.php';
 
-$MakeTorrent = new File_Bittorrent_MakeTorrent('example.php');
+$MakeTorrent = new File_Bittorrent2_MakeTorrent('example.php');
 
 // Set the announce URL
 $MakeTorrent->setAnnounce('http://www.example.org');

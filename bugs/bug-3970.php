@@ -7,14 +7,14 @@
     *
     * @author Markus Tacker <m@tacker.org>
     * @version $Id$
-    * @package File_Bittorrent
+    * @package File_Bittorrent2
     * @subpackage Bugs
     */
 
-require_once '../File/Bittorrent/Encode.php';
-require_once '../File/Bittorrent/Decode.php';
-$Decoder = new File_Bittorrent_Decode;
-$Encoder = new File_Bittorrent_Encode;
+require_once '../File/Bittorrent2/Encode.php';
+require_once '../File/Bittorrent2/Decode.php';
+$Decoder = new File_Bittorrent2_Decode;
+$Encoder = new File_Bittorrent2_Encode;
 $torrent = $Decoder->decode(file_get_contents('../freebsd.torrent'));
 
 $info_encoded = $Encoder->encode($torrent);

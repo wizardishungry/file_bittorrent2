@@ -22,7 +22,7 @@
 // +----------------------------------------------------------------------+
 
 /**
-* Example usage of File_Bittorrent
+* Example usage of File_Bittorrent2
 *
 * @author Markus Tacker <m@tacker.org>
 * @version $Id$
@@ -31,35 +31,35 @@
 /**
 * Include class
 */
-require_once 'File/Bittorrent/Encode.php';
-require_once 'File/Bittorrent/Decode.php';
+require_once 'File/Bittorrent2/Encode.php';
+require_once 'File/Bittorrent2/Decode.php';
 
-$File_Bittorrent_Decode = new File_Bittorrent_Decode;
-$File_Bittorrent_Encode = new File_Bittorrent_Encode;
+$File_Bittorrent2_Decode = new File_Bittorrent2_Decode;
+$File_Bittorrent2_Encode = new File_Bittorrent2_Encode;
 
 // Encoding vars
 echo "Encoding integers\n";
-$encodedInt = $File_Bittorrent_Encode->encode(10);
+$encodedInt = $File_Bittorrent2_Encode->encode(10);
 var_dump($encodedInt);
-var_dump($File_Bittorrent_Decode->decode($encodedInt));
+var_dump($File_Bittorrent2_Decode->decode($encodedInt));
 
 echo "Encoding strings\n";
-$encodedStr = $File_Bittorrent_Encode->encode('This is a string.');
+$encodedStr = $File_Bittorrent2_Encode->encode('This is a string.');
 var_dump($encodedStr);
-var_dump($File_Bittorrent_Decode->decode($encodedStr));
+var_dump($File_Bittorrent2_Decode->decode($encodedStr));
 
 echo "Encoding arrays as lists\n";
-$encodedList = $File_Bittorrent_Encode->encode(array('Banana', 'Apple', 'Cherry'));
+$encodedList = $File_Bittorrent2_Encode->encode(array('Banana', 'Apple', 'Cherry'));
 var_dump($encodedList);
-var_dump($File_Bittorrent_Decode->decode($encodedList));
+var_dump($File_Bittorrent2_Decode->decode($encodedList));
 
 echo "Encoding arrays as dictionaries\n";
-$encodedDict = $File_Bittorrent_Encode->encode(array('fruits' => array('Banana', 'Apple', 'Cherry','subarray' => array(1,2,3)), 'ints' => array(1,2,3), 'count' => 3));
+$encodedDict = $File_Bittorrent2_Encode->encode(array('fruits' => array('Banana', 'Apple', 'Cherry','subarray' => array(1,2,3)), 'ints' => array(1,2,3), 'count' => 3));
 var_dump($encodedDict);
-print_r($File_Bittorrent_Decode->decode($encodedDict));
+print_r($File_Bittorrent2_Decode->decode($encodedDict));
 
 // Decode a file
-print_r($File_Bittorrent_Decode->decodeFile('install-x86-universal-2005.0.iso.torrent'));
+print_r($File_Bittorrent2_Decode->decodeFile('install-x86-universal-2005.0.iso.torrent'));
 
 /* Output of decode
 
