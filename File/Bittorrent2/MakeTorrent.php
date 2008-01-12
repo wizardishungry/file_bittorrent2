@@ -6,6 +6,7 @@
 // | Copyright (C) 2004-2005                                              |
 // |   Justin Jones <j.nagash@gmail.com>                                  |
 // |   Markus Tacker <m@tacker.org>                                       |
+// |   barry hunter <geo@barryhunter.co.uk>                               |
 // +----------------------------------------------------------------------+
 // | This library is free software; you can redistribute it and/or        |
 // | modify it under the terms of the GNU Lesser General Public           |
@@ -31,6 +32,7 @@
  *
  * @author Justin Jones <j.nagash@gmail.com>
  * @author Markus Tacker <m@tacker.org>
+ * @author barry hunter <geo@barryhunter.co.uk>
  * @version $Id$
  * @package File_Bittorrent2
  * @category File
@@ -51,6 +53,7 @@ require_once 'File/Bittorrent2/Exception.php';
  *
  * @author Justin Jones <j.nagash@gmail.com>
  * @author Markus Tacker <m@tacker.org>
+ * @author barry hunter <geo@barryhunter.co.uk>
  * @package File_Bittorrent2
  * @category File
  */
@@ -125,6 +128,11 @@ class File_Bittorrent2_MakeTorrent
     * @var mixed    The last error object or null if no error has occurred.
     */
     protected $last_error;
+	
+	/**
+	* @var bool Where or not we have a list of files
+	*/
+	protected $is_multifile = false;
 
     /**
      * Constructor
@@ -229,7 +237,10 @@ class File_Bittorrent2_MakeTorrent
      */
     function buildTorrent()
     {
-        if ($this->is_file) {
+        if ($this->is_multifile) {
+            //we already have the files added
+            $metainfo = $this->encodeTorrent();
+        } else if ($this->is_file) {
             if (!$info = $this->addFile($this->path)) {
                 return false;
             }
@@ -468,6 +479,52 @@ class File_Bittorrent2_MakeTorrent
             pclose($this->fp);
         }
     }
+	
+	/**
+	* Function to set the name for
+	* the .torrent file
+	*
+	* @param string name
+	* @return bool
+	*/
+	function setName($name)
+	{
+		$this->name = strval($name);
+		return true;
+	}
+
+	/**
+	* Function to add a specific list of files, 
+	* pass blank to the constructor then call this function
+	* 
+	* @param array list of filepaths to add;
+	* @param string folder containing files
+	* @return bool
+	*/
+	function addFiles($filelist,$dir)
+	{
+		$this->is_dir = true;
+		$this->is_multifile = true;
+		$this->name = basename($dir);
+
+		sort($filelist);
+
+		foreach ($filelist as $file) {
+			$filedata = $this->addFile($dir.$file);
+			if ($filedata !== false) {
+				$filedata['path'] = array();
+				$filedata['path'][] = basename($file);
+				$dirname = dirname($dir.$file);
+				while (basename($dirname) != $this->name) {
+					$filedata['path'][] = basename($dirname);
+					$dirname = dirname($dirname);
+				}
+				$filedata['path'] = array_reverse($filedata['path'], false);
+				$this->files[] = $filedata;
+			}
+		}
+		return true;
+	}
 }
 
 ?>
