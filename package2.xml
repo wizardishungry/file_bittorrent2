@@ -23,20 +23,20 @@ http://pear.php.net/dtd/package-2.0.xsd">
         <email>j.nagash@gmail.com</email>
         <active>no</active>
     </developer>
-    <date>2007-08-26</date>
+    <date>2008-01-12</date>
     <time>00:00:00</time>
     <version>
-        <release>1.0.0RC1</release>
-        <api>74</api>
+        <release>1.1.0</release>
+        <api>78</api>
     </version>
     <stability>
-        <release>beta</release>
+        <release>stable</release>
         <api>stable</api>
     </stability>
     <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
     <notes>
-        * First PHP5 only release
-        * Introduced Exceptions
+        * Stable Release
+        * Added File_Bittorrent2_MakeTorrent::addFiles() and File_Bittorrent2_MakeTorrent::setName() by barry hunter
     </notes>
     <contents>
         <dir name="/">
@@ -73,6 +73,23 @@ http://pear.php.net/dtd/package-2.0.xsd">
     </dependencies>
     <phprelease />
     <changelog>
+		<release>
+            <date>2008-01-12</date>
+            <time>00:00:00</time>
+            <version>
+                <release>1.1.0</release>
+                <api>78</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+            <notes>
+                * Stable Release
+		        * Added File_Bittorrent2_MakeTorrent::addFiles() and File_Bittorrent2_MakeTorrent::setName() by barry hunter
+            </notes>
+        </release>
         <release>
             <date>2007-08-26</date>
             <time>00:00:00</time>
