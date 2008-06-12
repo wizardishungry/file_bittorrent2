@@ -23,21 +23,20 @@ http://pear.php.net/dtd/package-2.0.xsd">
         <email>j.nagash@gmail.com</email>
         <active>no</active>
     </developer>
-    <date>2008-01-12</date>
-    <time>00:00:00</time>
-    <version>
-        <release>1.1.0</release>
-        <api>78</api>
-    </version>
-    <stability>
-        <release>stable</release>
-        <api>stable</api>
-    </stability>
-    <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
-    <notes>
-        * Stable Release
-        * Added File_Bittorrent2_MakeTorrent::addFiles() and File_Bittorrent2_MakeTorrent::setName() by barry hunter
-    </notes>
+	<date>2008-06-12</date>
+	<time>00:00:00</time>
+	<version>
+		<release>1.2.0</release>
+		<api>82</api>
+	</version>
+	<stability>
+		<release>stable</release>
+		<api>stable</api>
+	</stability>
+	<license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+	<notes>
+		* Implemented private flag for torrents. See PEAR Bug #14013.
+	</notes>
     <contents>
         <dir name="/">
             <dir name="File">
@@ -57,6 +56,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
                 <file name="AllTests.php" role="test" />
                 <file name="Bug7406.php" role="test" />
                 <file name="Bug8085.php" role="test" />
+				<file name="Bug14013.php" role="test" />
                 <file name="FileBittorrent2.php" role="test" />
             </dir>
         </dir>
@@ -73,6 +73,22 @@ http://pear.php.net/dtd/package-2.0.xsd">
     </dependencies>
     <phprelease />
     <changelog>
+		<release>
+			<date>2008-06-12</date>
+			<time>00:00:00</time>
+			<version>
+				<release>1.2.0</release>
+				<api>82</api>
+			</version>
+			<stability>
+				<release>stable</release>
+				<api>stable</api>
+			</stability>
+			<license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+			<notes>
+				* Implemented private flag for torrents. See PEAR Bug #14013.
+			</notes>
+        </release>
 		<release>
             <date>2008-01-12</date>
             <time>00:00:00</time>
