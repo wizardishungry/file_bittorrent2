@@ -3,7 +3,7 @@
 // +----------------------------------------------------------------------+
 // | Decode and Encode data in Bittorrent format                          |
 // +----------------------------------------------------------------------+
-// | Copyright (C) 2004-2006 Markus Tacker <m@tacker.org>                 |
+// | Copyright (C) 2004-2005 Markus Tacker <m@tacker.org>                 |
 // +----------------------------------------------------------------------+
 // | This library is free software; you can redistribute it and/or        |
 // | modify it under the terms of the GNU Lesser General Public           |
@@ -21,45 +21,47 @@
 // | 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA               |
 // +----------------------------------------------------------------------+
 
-    /**
-    * Test for File_Bittorrent2
-    *
-    * @package File_Bittorrent2
-    * @subpackage Test
-    * @category File
-    * @author Markus Tacker <m@tacker.org>
-    * @version $Id$
-    */
+/**
+* Test for Bug #14013
+*
+* @link http://pear.php.net/bugs/bug.php?id=14013
+* @package File_Bittorrent2
+* @subpackage Test
+* @category File
+* @author Markus Tacker <m@tacker.org>
+* @version $Id$
+*/
 
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
+require_once 'PHPUnit/Framework/TestCase.php';
+require_once 'File/Bittorrent2/MakeTorrent.php';
+require_once 'File/Bittorrent2/Decode.php';
 
-    require_once 'Tests/FileBittorrent2.php';
-    require_once 'Tests/Bug7406.php';
-    require_once 'Tests/Bug8085.php';
-    require_once 'Tests/Bug14013.php';
+/**
+* Test for Bug #14013
+*
+* @link http://pear.php.net/bugs/bug.php?id=14013
+* @package File_Bittorrent2
+* @subpackage Test
+* @category File
+* @author Markus Tacker <m@tacker.org>
+* @version $Id$
+*/
+class Tests_Bug14013 extends PHPUnit_Framework_TestCase
+{
+	public function testMakePrivateTorrent()
+	{
+		$Torrent = new File_Bittorrent2_MakeTorrent( __FILE__ );
+		$Torrent->setAnnounce( 'http://example.com/' );
+		$Torrent->setIsPrivate( true );
+		$tfile = tempnam('./', __CLASS__);
+		$bemetainfo = $Torrent->buildTorrent();
+		file_put_contents( $tfile, $bemetainfo );
 
-    /**
-    * Test for File_Bittorrent2
-    *
-    * @package File_Bittorrent2
-    * @subpackage Test
-    * @category File
-    * @author Markus Tacker <m@tacker.org>
-    * @version $Id$
-    */
-    class Tests_AllTests {
-
-        public static function suite() {
-            $suite = new PHPUnit_Framework_TestSuite();
-
-            $suite->addTestSuite('Tests_FileBittorrent2');
-            $suite->addTestSuite('Tests_Bug7406');
-            $suite->addTestSuite('Tests_Bug8085');
-            $suite->addTestSuite('Tests_Bug14013');
-
-            return $suite;
-        }
-    }
-
-?>
+		$Decode = new File_Bittorrent2_Decode();
+		$Decode->decodeFile( $tfile );
+		$metainfo = $Decode->decode( $bemetainfo );
+		unlink( $tfile );
+		$this->assertTrue( $Decode->isPrivate() );
+		$this->assertTrue( $metainfo['info']['private'] === 1 );
+	}
+}
