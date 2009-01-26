@@ -23,10 +23,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
         <email>j.nagash@gmail.com</email>
         <active>no</active>
     </developer>
-	<date>2009-01-25</date>
+	<date>2009-01-26</date>
 	<time>00:00:00</time>
 	<version>
-		<release>1.2.1</release>
+		<release>1.2.2</release>
 		<api>82</api>
 	</version>
 	<stability>
@@ -35,8 +35,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
 	</stability>
 	<license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
 	<notes>
-		* Changed PEAR dependency to 1.5.4. See http://pear.php.net/advisory-20070507.txt
-		* Added test case for Bug #15453
+		* Fixed a problem with trackers escaping spaces in dictionary keys in scrape responses. See PEAR Bug #15453.
 	</notes>
     <contents>
         <dir name="/">
@@ -75,6 +74,22 @@ http://pear.php.net/dtd/package-2.0.xsd">
     </dependencies>
     <phprelease />
     <changelog>
+		<release>
+			<date>2009-01-26</date>
+			<time>00:00:00</time>
+			<version>
+				<release>1.2.2</release>
+				<api>82</api>
+			</version>
+			<stability>
+				<release>stable</release>
+				<api>stable</api>
+			</stability>
+			<license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+			<notes>
+				* Fixed a problem with trackers escaping spaces in dictionary keys in scrape responses. See PEAR Bug #15453.
+			</notes>
+		</release>
 		<release>
 			<date>2009-01-25</date>
 			<time>00:00:00</time>
