@@ -486,15 +486,21 @@ class File_Bittorrent2_Decode
         $packed_hash = pack('H*', $this->info_hash);
         $scrape_url = preg_replace('/\/announce$/', '/scrape', $this->announce) . '?info_hash=' . urlencode($packed_hash);
         $scrape_data = file_get_contents($scrape_url);
+
         try {
 			$stats = $this->decode($scrape_data);
 		} catch (File_Bittorrent2_Exception $e) {
 			throw new File_Bittorrent2_Exception('Invalid scrape data: \'' . $scrape_data . '\'', File_Bittorrent2_Exception::decode);
 		}
-		if (!isset($stats['files'][$packed_hash])) {
-			throw new File_Bittorrent2_Exception('Invalid scrape data: \'' . $scrape_data . '\'', File_Bittorrent2_Exception::decode);
-		}
-        return $stats['files'][$packed_hash];
+
+		if (isset($stats['files'][$packed_hash])) return $stats['files'][$packed_hash];
+
+		// Some trackers escape special characters in the
+		// info_hash in their response so check these also
+		$alt_hash = str_replace(' ', '+', $packed_hash);
+		if (isset($stats['files'][$alt_hash])) return $stats['files'][$alt_hash];
+
+		throw new File_Bittorrent2_Exception('Invalid scrape data: \'' . $scrape_data . '\'', File_Bittorrent2_Exception::decode);
     }
 
 	/**
