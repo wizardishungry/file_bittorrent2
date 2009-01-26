@@ -51,54 +51,11 @@ ini_set( 'log_errors', 0 );
 */
 class Tests_Bug15453 extends PHPUnit_Framework_TestCase
 {
-	public function testDecodeTorrent()
+	public function testScrape()
 	{
+		// Decode the torrent
 		$File_Bittorrent2_Decode = new File_Bittorrent2_Decode;
-		$info = $File_Bittorrent2_Decode->decode( file_get_contents( './bugs/bug-15453/Brothers.and.Sisters.S03E03.HDTV.XviD-NoTV.avi.4442311.TPB.torrent' ) );
-		$info[ 'info' ][ 'pieces' ] = null;
-		$this->assertEquals( $info, array (
-		  'announce' => 'http://tracker.thepiratebay.org/announce',
-		  'announce-list' => array (
-			  array ( 'http://tracker.thepiratebay.org/announce' ),
-			  array ( 'udp://tracker.thepiratebay.org:80/announce' ),
-		  ),
-		  'comment' => 'Torrent downloaded from http://thepiratebay.org',
-		  'creation date' => 1223867991,
-		  'encoding' => 'ANSI_X3.4-1968',
-		  'info' => array (
-				'length' => 367221186,
-				'name' => 'Brothers.and.Sisters.S03E03.HDTV.XviD-NoTV.avi',
-				'name.utf-8' => 'Brothers.and.Sisters.S03E03.HDTV.XviD-NoTV.avi',
-				'piece length' => 524288,
-				'pieces' => NULL,
-				'playtime' => '00:41:04.560',
-			),
-		));
-	}
-	
-	public function testInfoTorrent()
-	{
-		$File_Bittorrent2_Decode = new File_Bittorrent2_Decode;
-		$info = $File_Bittorrent2_Decode->decodeFile( './bugs/bug-15453/Brothers.and.Sisters.S03E03.HDTV.XviD-NoTV.avi.4442311.TPB.torrent' );
-		$this->assertEquals( $info, array (
-		  'name' => 'Brothers.and.Sisters.S03E03.HDTV.XviD-NoTV.avi',
-		  'filename' => 'Brothers.and.Sisters.S03E03.HDTV.XviD-NoTV.avi.4442311.TPB.torrent',
-		  'comment' => 'Torrent downloaded from http://thepiratebay.org',
-		  'date' => 1223867991,
-		  'created_by' => '',
-		  'files' => array (
-			array (
-			  'filename' => 'Brothers.and.Sisters.S03E03.HDTV.XviD-NoTV.avi',
-			  'size' => 367221186,
-			),
-		  ),
-		  'size' => 367221186,
-		  'announce' => 'http://tracker.thepiratebay.org/announce',
-		  'announce_list' => array (
-			array ( 'http://tracker.thepiratebay.org/announce' ),
-			array ( 'udp://tracker.thepiratebay.org:80/announce' ),
-		  ),
-		  'info_hash' => '1f6700e842326d207ec0f0f07c72e43774a0c6f1',
-		));
+		$File_Bittorrent2_Decode->decodeFile('./bugs/bug-15453/Brothers.and.Sisters.S03E03.HDTV.XviD-NoTV.avi.4442311.TPB.torrent');
+		$stats = $File_Bittorrent2_Decode->getStats();
 	}
 }
