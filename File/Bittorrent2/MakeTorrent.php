@@ -237,29 +237,29 @@ class File_Bittorrent2_MakeTorrent
      * based on the parameters you have set
      * with the set* functions.
      *
+     * @param array custom data set to be included in the metainfo
      * @return mixed false on failure or a string containing the metainfo
 	 * @throws File_Bittorrent2_Exception if no file or directory is given
      */
-    function buildTorrent()
+    function buildTorrent(array $metainfo = array())
     {
         if ($this->is_multifile) {
             //we already have the files added
-            $metainfo = $this->encodeTorrent();
+            $metainfo = $this->encodeTorrent(array(),$metainfo);
         } else if ($this->is_file) {
             if (!$info = $this->addFile($this->path)) {
                 return false;
             }
-            if (!$metainfo = $this->encodeTorrent($info)) {
+            if (!$metainfo = $this->encodeTorrent($info,$metainfo)) {
                 return false;
             }
         } else if ($this->is_dir) {
             if (!$diradd_ok = $this->addDir($this->path)) {
                 return false;
             }
-            $metainfo = $this->encodeTorrent();
+            $metainfo = $this->encodeTorrent(array(),$metainfo);
         } else {
             throw new File_Bittorrent2_Exception('You must provide a file or directory.', File_Bittorrent2_Exception::make);
-            return false;
         }
         return $metainfo;
     }
@@ -269,12 +269,13 @@ class File_Bittorrent2_MakeTorrent
      * into a valid torrent metainfo string
      *
      * @param array file data
-     * @return mixed false on failure or the bencoded metainfo string
+     * @param array custom data set to be included in the metainfo 
+     * @return string bencoded metainfo 
 	 * @throws File_Bittorrent2_Exception if no file or directory is defined
      */
-    protected function encodeTorrent(array $info = array())
+    protected function encodeTorrent(array $info = array(), array $metainfo = array())
     {
-        $bencdata = array();
+        $bencdata = $metainfo;
         $bencdata['info'] = array();
         if ($this->is_file) {
             $bencdata['info']['length'] = $info['length'];
