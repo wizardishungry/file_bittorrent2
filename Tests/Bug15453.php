@@ -53,9 +53,13 @@ class Tests_Bug15453 extends PHPUnit_Framework_TestCase
 {
 	public function testScrape()
 	{
+		if (!(bool)ini_get('allow_url_fopen')) $this->markTestSkipped();
 		// Decode the torrent
 		$File_Bittorrent2_Decode = new File_Bittorrent2_Decode;
-		$File_Bittorrent2_Decode->decodeFile('./bugs/bug-15453/Brothers.and.Sisters.S03E03.HDTV.XviD-NoTV.avi.4442311.TPB.torrent');
+		$temp = tempnam(sys_get_temp_dir(), __CLASS__);
+		file_put_contents($temp, file_get_contents('http://torrents.thepiratebay.org/4442311/Brothers.and .Sisters.S03E03.HDTV.XviD-NoTV.avi.4442311.TPB.torrent'));
+		$File_Bittorrent2_Decode->decodeFile($temp);
 		$stats = $File_Bittorrent2_Decode->getStats();
+		unlink($temp);
 	}
 }
