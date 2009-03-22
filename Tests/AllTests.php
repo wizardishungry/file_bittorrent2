@@ -38,6 +38,7 @@
     require_once 'Tests/Bug7406.php';
     require_once 'Tests/Bug8085.php';
     require_once 'Tests/Bug14013.php';
+    require_once 'Tests/ticket-19.php';
 
     /**
     * Test for File_Bittorrent2
@@ -57,7 +58,7 @@
             $suite->addTestSuite('Tests_Bug7406');
             $suite->addTestSuite('Tests_Bug8085');
             $suite->addTestSuite('Tests_Bug14013');
-
+			$suite->addTestSuite('Tests_Ticket19');
             return $suite;
         }
     }
