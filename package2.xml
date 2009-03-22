@@ -23,11 +23,11 @@ http://pear.php.net/dtd/package-2.0.xsd">
         <email>j.nagash@gmail.com</email>
         <active>no</active>
     </developer>
-	<date>2009-01-26</date>
+	<date>2009-03-22</date>
 	<time>00:00:00</time>
 	<version>
-		<release>1.2.2</release>
-		<api>82</api>
+		<release>1.3.0</release>
+		<api>94</api>
 	</version>
 	<stability>
 		<release>stable</release>
@@ -35,7 +35,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
 	</stability>
 	<license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
 	<notes>
-		* Fixed a problem with trackers escaping spaces in dictionary keys in scrape responses. See PEAR Bug #15453.
+		* Fixed File_Bittorrent2_Decode::getAnnounceList() not returning announce list.
+		* Added option to File_Bittorrent2_Decode::getInfoHash() to return raw info_hash.
 	</notes>
     <contents>
         <dir name="/">
@@ -58,6 +59,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
                 <file name="Bug8085.php" role="test" />
 				<file name="Bug14013.php" role="test" />
 				<file name="Bug15453.php" role="test" />
+				<file name="ticket-19.php" role="test" />
                 <file name="FileBittorrent2.php" role="test" />
             </dir>
         </dir>
@@ -74,6 +76,23 @@ http://pear.php.net/dtd/package-2.0.xsd">
     </dependencies>
     <phprelease />
     <changelog>
+    	<release>
+			<date>2009-03-22</date>
+			<time>00:00:00</time>
+			<version>
+				<release>1.3.0</release>
+				<api>94</api>
+			</version>
+			<stability>
+				<release>stable</release>
+				<api>stable</api>
+			</stability>
+			<license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+			<notes>
+				* Fixed File_Bittorrent2_Decode::getAnnounceList() not returning announce list.
+				* Added option to File_Bittorrent2_Decode::getInfoHash() to return raw info_hash.
+			</notes>
+		</release>
 		<release>
 			<date>2009-01-26</date>
 			<time>00:00:00</time>
